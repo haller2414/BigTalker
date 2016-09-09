@@ -6,6 +6,7 @@
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
  *      -- Paypal at: rayzur@rayzurbock.com
+ *      -- https://www.paypal.me/brianlowrance
  *      -- Square Cash:  https://Cash.me/$Lowrance (Debit cards = free, Credit cards charge 3% on top of your donation o $15 is charged as $15.45)
  *      -- Square Marketplace at: https://squareup.com/market/brian-lowrance#category-a58f6ff3-7380-471b-8432-7e5881654e2c
  *
