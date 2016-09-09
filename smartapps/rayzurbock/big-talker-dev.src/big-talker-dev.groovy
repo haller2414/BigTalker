@@ -1,11 +1,12 @@
-/**
- *  BIG TALKER -- Version 1.1.6-Beta1 -- A SmartApp for SmartThings Home Automation System
+/**  
+ *  BIG TALKER -- Version 1.1.8a2 -- A SmartApp for SmartThings Home Automation System
+ *  WARNING!  1.1.8 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
  *      -- Paypal at: rayzur@rayzurbock.com
- *      -- Paypal Donation (for supporters without a Paypal account): https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WKB9N9MPUGTZS
+ *      -- Square Cash:  https://Cash.me/$Lowrance (Debit cards = free, Credit cards charge 3% on top of your donation o $15 is charged as $15.45)
  *      -- Square Marketplace at: https://squareup.com/market/brian-lowrance#category-a58f6ff3-7380-471b-8432-7e5881654e2c
  *
  *-------------------------------------------------------------------------------------------------------------------
@@ -23,14 +24,14 @@
  */
  
 definition(
-    name: "Big Talker-DEV",
+    name: "Big Talker",
     namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
-    iconUrl: "http://rayzurbock.com/ST/icons/BigTalker-115.png",
-    iconX2Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-115.png",
-    iconX3Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-115.png")
+    iconUrl: "http://rayzurbock.com/ST/icons/BigTalker-117.png",
+    iconX2Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-117.png",
+    iconX3Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-117.png")
 
 
 preferences {
@@ -57,6 +58,7 @@ preferences {
 }
 
 def pageStart(){
+	setAppVersion()
     if (checkConfig()) { 
         // Do nothing here, but run checkConfig() 
     } 
@@ -1590,10 +1592,13 @@ def pageHelpPhraseTokens(){
        	   def AvailTokens = ""
            AvailTokens += "%devicename% = Triggering devices display name\n\n"
            AvailTokens += "%devicetype% = Triggering device type; motion, switch, etc\n\n"
+           AvailTokens += "%devicechange% = State change that occurred; on/off, active/inactive, etc...\n\n"
+           AvailTokens += "%description% = The description of the event that is to be displayed to the user in the mobile application. \n\n"
            AvailTokens += "%locationname% = Hub location name; home, work, etc\n\n"
            AvailTokens += "%lastmode% = Last hub mode; home, away, etc\n\n"
            AvailTokens += "%mode% = Current hub mode; home, away, etc\n\n"
            AvailTokens += "%time% = Current hub time; HH:mm am/pm\n\n"
+           AvailTokens += "%shmstatus% = SmartHome Monitor Status (Disarmed, Armed Stay, Armed Away)\n\n"
            AvailTokens += "%weathercurrent% = Current weather based on hub location\n\n"
            AvailTokens += "%weathercurrent(00000)% = Current weather* based on custom zipcode (replace 00000)\n\n"
            AvailTokens += "%weathertoday% = Today's weather forecast* based on hub location\n\n"
@@ -1657,8 +1662,7 @@ def pageConfigureDefaults(){
         }
         section ("Only between these times:"){
             input "defaultStartTime", "time", title: "Don't talk before: ", required: false, submitOnChange: true
-            //input "defaultEndTime", "time", title: "Don't talk after: ", required: (!(settings.defaultStartTime == null)), submitOnChange: true
-            input "defaultEndTime", "time", title: "Don't talk after: ", required: ((settings.defaultStartTime != null && settings.defaultStartTime != "") ? true : false), submitOnChange: true
+            input "defaultEndTime", "time", title: "Don't talk after: ", required: (!(settings.defaultStartTime == null)), submitOnChange: true
         }
         section(){
             input "debugmode", "bool", title: "Enable debug logging", required: true, defaultValue: false
@@ -2239,7 +2243,6 @@ def checkConfig() {
 }
 
 def initialize() {
-    setAppVersion()
     if (!(checkConfig())) { 
         def msg = ""
         msg = "ERROR: App not properly configured!  Can't start.\n"
@@ -2559,7 +2562,7 @@ def onContact1Event(evt){
 def onContact2Event(evt){
     processContactEvent(2, evt)
 }
-def onContact3Event(evt){
+def onContactEvent(evt){
     processContactEvent(3, evt)
 }
 
@@ -2859,8 +2862,11 @@ def processPhraseVariables(phrase, evt){
     def zipCode = location.zipCode
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
     if (phrase.toLowerCase().contains("%devicename%")) {phrase = phrase.toLowerCase().replace('%devicename%', evt.displayName)}  //User given name of the device
+    if (phrase.toLowerCase().contains("%devicename2%")) {phrase = phrase.toLowerCase().replace('%devicename2%', evt.device.name)}  //User given name of the device
+    if (phrase.toLowerCase().contains("%devicename3%")) {phrase = phrase.toLowerCase().replace('%devicename3%', evt.device.displayName)}  //User given name of the device
     if (phrase.toLowerCase().contains("%devicetype%")) {phrase = phrase.toLowerCase().replace('%devicetype%', evt.name)}  //Device type: motion, switch, etc...
     if (phrase.toLowerCase().contains("%devicechange%")) {phrase = phrase.toLowerCase().replace('%devicechange%', evt.value)}  //State change that occurred: on/off, active/inactive, etc...
+    if (phrase.toLowerCase().contains("%description%")) {phrase = phrase.toLowerCase().replace('%description%', evt.descriptionText)}  //Description of the event which occurred via device-specific text`
     if (phrase.toLowerCase().contains("%locationname%")) {phrase = phrase.toLowerCase().replace('%locationname%', location.name)}
     if (phrase.toLowerCase().contains("%lastmode%")) {phrase = phrase.toLowerCase().replace('%lastmode%', state.lastMode)}
     if (phrase.toLowerCase().contains("%mode%")) {phrase = phrase.toLowerCase().replace('%mode%', location.mode)}
@@ -2922,12 +2928,19 @@ def processPhraseVariables(phrase, evt){
         if (phrase.contains(",")) { phrase = phrase.replace(","," - ") }
         //if (phrase.contains(".")) { phrase = phrase.replace("."," - ") }
     }
+    if (phrase.toLowerCase().contains("%shmstatus%")) {
+    	def shmstatus = location.currentState("alarmSystemStatus")?.value
+        LOGDEBUG("SHMSTATUS=${shmstatus}")
+		def shmmessage = [off : "Disarmed", away: "Armed, away", stay: "Armed, stay"][shmstatus] ?: shmstatus
+        LOGDEBUG("SHMMESSAGE=${shmmessage}")
+        phrase = phrase.replace("%shmstatus%", shmmessage)
+    }
     if (phrase.contains('"')) { phrase = phrase.replace('"',"") }
     if (phrase.contains("'")) { phrase = phrase.replace("'","") }
     if (phrase.contains("10S")) { phrase = phrase.replace("10S","tens") }
     if (phrase.contains("20S")) { phrase = phrase.replace("20S","twenties") }
     if (phrase.contains("30S")) { phrase = phrase.replace("30S","thirties") }
-    if (phrase.contains("40S")) { phrase = phrase.replace("40S","forties") }
+    if (phrase.contains("40S")) { phrase = phrase.replace("40S","fourties") }
     if (phrase.contains("50S")) { phrase = phrase.replace("50S","fifties") }
     if (phrase.contains("60S")) { phrase = phrase.replace("60S","sixties") }
     if (phrase.contains("70S")) { phrase = phrase.replace("70S","seventies") }
@@ -2945,10 +2958,6 @@ def adjustWeatherPhrase(phraseIn){
     phraseOut = phraseOut.replace(" S ", " South ")
     phraseOut = phraseOut.replace(" E ", " East ")
     phraseOut = phraseOut.replace(" W ", " West ")
-    phraseOut = phraseOut.replace(" NE ", " Northeast ")
-    phraseOut = phraseOut.replace(" NW ", " Northwest ")
-    phraseOut = phraseOut.replace(" SE ", " Southeast ")
-    phraseOut = phraseOut.replace(" SW ", " Southwest ")
     phraseOut = phraseOut.replace(" NNE ", " North Northeast ")
     phraseOut = phraseOut.replace(" NNW ", " North Northwest ")
     phraseOut = phraseOut.replace(" SSE ", " South Southeast ")
@@ -3022,8 +3031,8 @@ def Talk(phrase, customSpeechDevice, evt){
                 	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                     	        } else { 
-                            	    if (currentVolume > 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-                            	    if (currentVolume == 0) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 75) }
+                            	    if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
+                            	    if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
                         	    }
                     	    } else
                     	    {
@@ -3032,8 +3041,8 @@ def Talk(phrase, customSpeechDevice, evt){
 	                                if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
 	                            } else { 
-            	                    if (currentVolume > 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-                	                if (currentVolume == 0) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 75) }
+            	                    if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
+                	                if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
                     	        }
                     	    }
                 	    } else {
@@ -3047,9 +3056,8 @@ def Talk(phrase, customSpeechDevice, evt){
                     	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                         if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                         	        } else { 
-                                        if (currentVolume > 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-                	                    if (currentVolume == 0) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 75) }
-                            	        it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)
+                                        if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
+                	                    if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
                         	        }
                     	        } else {
     	                            if (currentStatus == "playing") {
@@ -3058,8 +3066,8 @@ def Talk(phrase, customSpeechDevice, evt){
                         	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                             if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                             	        } else { 
-        	                                if (currentVolume > 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-            	                            if (currentVolume == 0) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 75) }
+        	                                if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
+            	                            if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
                 	                    }
                     	            } else {
                             	        LOGTRACE("mP | ${it.displayName} | cT=null | cS<>playing | Sending playTrackAndRestore().")
@@ -3067,8 +3075,8 @@ def Talk(phrase, customSpeechDevice, evt){
                                 	        if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                             if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
                             	        } else { 
-	                                        if (currentVolume > 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-    	                                    if (currentVolume == 0) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 75) }
+	                                        if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
+    	                                    if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
         	                            }
             	                    }
                 	            }
@@ -3079,8 +3087,8 @@ def Talk(phrase, customSpeechDevice, evt){
                                     if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
                                 } else { 
-	                                if (currentVolume > 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-    	                            if (currentVolume == 0) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 75) }
+	                                if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
+    	                            if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
         	                    }
                             }
                 	    }
@@ -3220,8 +3228,7 @@ def timeAllowed(devicetype,index){
     }
     
     //No overrides have returned True, process Default
-    //if (settings.defaultStartTime == null) { 
-    if ((settings.defaultStartTime != null && settings.defaultStartTime != "") ? false : true) {
+    if (settings.defaultStartTime == null) { 
     	return true 
     } else {
         if (timeOfDayIsBetween(settings.defaultStartTime, settings.defaultEndTime, now, location.timeZone)) { return true } else { return false }
@@ -3916,5 +3923,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.6-Beta1"
+    state.appversion = "1.1.8a2"
 }
