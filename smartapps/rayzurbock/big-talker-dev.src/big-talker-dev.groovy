@@ -6,7 +6,6 @@
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
  *      -- Paypal at: rayzur@rayzurbock.com
- *      -- Paypal at: https://www.paypal.me/brianlowrance
  *      -- Square Cash:  https://Cash.me/$Lowrance (Debit cards = free, Credit cards charge 3% on top of your donation o $15 is charged as $15.45)
  *      -- Square Marketplace at: https://squareup.com/market/brian-lowrance#category-a58f6ff3-7380-471b-8432-7e5881654e2c
  *
@@ -3132,10 +3131,12 @@ def Talk(phrase, customSpeechDevice, evt){
                     	LOGTRACE("sS | ${it.displayName} | Sending speak().")
                     }
                     catch (ex) {
+                    	LOGDEBUG("LOGTRACE it.displayName failed, trying it.device.displayName")
                     	try {
                     		LOGTRACE("sS | ${it.device.displayName} | Sending speak().")
                         }
                         catch (ex2) {
+                        	LOGDEBUG("LOGTRACE it.device.displayName failed, trying it.device.name")
                         	LOGTRACE("sS | ${it.device.name} | Sending speak().")
                         }
                     }
@@ -3952,5 +3953,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.8a4"
+    state.appversion = "1.1.8a3"
 }
