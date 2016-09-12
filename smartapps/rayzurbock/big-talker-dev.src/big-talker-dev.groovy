@@ -1,12 +1,11 @@
 /**  
- *  BIG TALKER -- Version 1.1.8a2 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.8a3 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.8 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
  *      -- Paypal at: rayzur@rayzurbock.com
- *      -- https://www.paypal.me/brianlowrance
  *      -- Square Cash:  https://Cash.me/$Lowrance (Debit cards = free, Credit cards charge 3% on top of your donation o $15 is charged as $15.45)
  *      -- Square Marketplace at: https://squareup.com/market/brian-lowrance#category-a58f6ff3-7380-471b-8432-7e5881654e2c
  *
@@ -2862,9 +2861,27 @@ def processButtonEvent(index, evt){
 def processPhraseVariables(phrase, evt){
     def zipCode = location.zipCode
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
-    if (phrase.toLowerCase().contains("%devicename%")) {phrase = phrase.toLowerCase().replace('%devicename%', evt.displayName)}  //User given name of the device
-    if (phrase.toLowerCase().contains("%devicename2%")) {phrase = phrase.toLowerCase().replace('%devicename2%', evt.device.name)}  //User given name of the device
-    if (phrase.toLowerCase().contains("%devicename3%")) {phrase = phrase.toLowerCase().replace('%devicename3%', evt.device.displayName)}  //User given name of the device
+    if (phrase.toLowerCase().contains("%devicename%")) {
+    	Try {
+        	phrase = phrase.toLowerCase().replace('%devicename%', evt.displayName)  //User given name of the device triggering the event
+        }
+        Catch { 
+        	LOGDEBUG("evt.displayName failed; trying evt.device.displayName")
+        	Try {
+                phrase = phrase.toLowerCase().replace('%devicename%', evt.device.displayName) //User given name of the device triggering the event
+            }
+            Catch {
+            	LOGDEBUG("evt.device.displayName filed; trying evt.device.name")
+                Try {
+                	phrase = phrase.toLowerCase().replace('%devicename%', evt.device.name) //SmartThings name for the device triggering the event
+                }
+                Catch {
+                	LOGDEBUG("evt.device.name filed; Giving up")
+                    phrase = phrase.toLowerCase().replace('%devicename%', "Device Name Unknown")
+                }
+            }
+       }
+    }
     if (phrase.toLowerCase().contains("%devicetype%")) {phrase = phrase.toLowerCase().replace('%devicetype%', evt.name)}  //Device type: motion, switch, etc...
     if (phrase.toLowerCase().contains("%devicechange%")) {phrase = phrase.toLowerCase().replace('%devicechange%', evt.value)}  //State change that occurred: on/off, active/inactive, etc...
     if (phrase.toLowerCase().contains("%description%")) {phrase = phrase.toLowerCase().replace('%description%', evt.descriptionText)}  //Description of the event which occurred via device-specific text`
@@ -3924,5 +3941,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.8a2"
+    state.appversion = "1.1.8a3"
 }
