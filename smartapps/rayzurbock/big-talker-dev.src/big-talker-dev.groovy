@@ -1,11 +1,12 @@
 /**  
- *  BIG TALKER -- Version 1.1.8a3 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.8a4 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.8 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
  *      -- Paypal at: rayzur@rayzurbock.com
+ *      -- Paypal at: https://www.paypal.me/brianlowrance
  *      -- Square Cash:  https://Cash.me/$Lowrance (Debit cards = free, Credit cards charge 3% on top of your donation o $15 is charged as $15.45)
  *      -- Square Marketplace at: https://squareup.com/market/brian-lowrance#category-a58f6ff3-7380-471b-8432-7e5881654e2c
  *
@@ -2862,20 +2863,20 @@ def processPhraseVariables(phrase, evt){
     def zipCode = location.zipCode
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
     if (phrase.toLowerCase().contains("%devicename%")) {
-    	Try {
+    	try {
         	phrase = phrase.toLowerCase().replace('%devicename%', evt.displayName)  //User given name of the device triggering the event
         }
-        Catch { 
+        catch (ex) { 
         	LOGDEBUG("evt.displayName failed; trying evt.device.displayName")
-        	Try {
+        	try {
                 phrase = phrase.toLowerCase().replace('%devicename%', evt.device.displayName) //User given name of the device triggering the event
             }
-            Catch {
+            catch (ex2) {
             	LOGDEBUG("evt.device.displayName filed; trying evt.device.name")
-                Try {
+                try {
                 	phrase = phrase.toLowerCase().replace('%devicename%', evt.device.name) //SmartThings name for the device triggering the event
                 }
-                Catch {
+                catch (ex3) {
                 	LOGDEBUG("evt.device.name filed; Giving up")
                     phrase = phrase.toLowerCase().replace('%devicename%', "Device Name Unknown")
                 }
@@ -3127,7 +3128,17 @@ def Talk(phrase, customSpeechDevice, evt){
                 //Iterate Speech Devices and talk
 		        def attrs = currentSpeechDevices.supportedAttributes
                 currentSpeechDevices.each(){
-	                LOGTRACE("sS | ${it.displayName} | Sending speak().")
+	                try {
+                    	LOGTRACE("sS | ${it.displayName} | Sending speak().")
+                    }
+                    catch (ex) {
+                    	try {
+                    		LOGTRACE("sS | ${it.device.displayName} | Sending speak().")
+                        }
+                        catch (ex2) {
+                        	LOGTRACE("sS | ${it.device.name} | Sending speak().")
+                        }
+                    }
 	                it.speak(phrase)
                 }
     	    } //!phrase == null
@@ -3941,5 +3952,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.8a3"
+    state.appversion = "1.1.8a4"
 }
