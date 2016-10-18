@@ -1,6 +1,6 @@
 /**  
  *  BIG TALKER -- Version 1.1.9a1 -- A SmartApp for SmartThings Home Automation System
- *  WARNING!  1.1.8 DEVELOPMENT BRANCH, May have unforseen bugs!
+ *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
