@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.8a4 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9a1 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.8 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -34,7 +34,6 @@ definition(
     iconX2Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-117.png",
     iconX3Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-117.png")
 
-
 preferences {
     page(name: "pageStart")
     page(name: "pageStatus")
@@ -49,7 +48,7 @@ preferences {
     page(name: "pageConfigContact")
     page(name: "pageConfigMode")
     page(name: "pageConfigThermostat")
-	page(name: "pageConfigAcceleration")
+    page(name: "pageConfigAcceleration")
     page(name: "pageConfigWater")
     page(name: "pageConfigSmoke")
     page(name: "pageConfigButton")
@@ -2997,25 +2996,25 @@ def Talk(phrase, customSpeechDevice, evt){
         state.ableToTalk = false
         if (!(phrase == null)) {
             phrase = processPhraseVariables(phrase, evt)
-            LOGTRACE("TALK(${evt.name}) |mP| >> ${phrase}")
+            LOGTRACE("TALK(${evt.name})|mP| >> ${phrase}")
             try {
                 state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
                 state.ableToTalk = true
             } catch(e) {
-                LOGERROR("ST Platform issue (textToSpeech)? ${e}")
+                LOGERROR("TALK(${evt.name})|mP| ST Platform issue (textToSpeech)? ${e}")
                 //Try Again
                 try {
-                    LOGTRACE("Trying textToSpeech function again...")
+                    LOGTRACE("TALK(${evt.name})|mP| Trying textToSpeech function again...")
                     state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase)
                     state.ableToTalk = true
                 } catch(ex) {
-                    LOGERROR("ST Platform issue (textToSpeech)? I tried textToSpeech() twice, SmartThings wouldn't convert/process.  I give up, Sorry..")
+                    LOGERROR("TALK(${evt.name})|mP| ST Platform issue (textToSpeech)? I tried textToSpeech() twice, SmartThings wouldn't convert/process.  I give up, Sorry..")
                     sendNotificationEvent("ST Platform issue? textToSpeech() failed.")
                     sendNotification("BigTalker couldn't announce: ${phrase}")
                 }
             }
             unschedule("poll")
-            LOGDEBUG("Delaying polling for 120 seconds")
+            LOGDEBUG("TALK(${evt.name})|mP| Delaying polling for 120 seconds")
             myRunIn(120, poll)
             if (state.ableToTalk){
                 state.sound.duration = (state.sound.duration.toInteger() + 5).toString()  //Try to prevent cutting out, add seconds to the duration
@@ -3025,28 +3024,28 @@ def Talk(phrase, customSpeechDevice, evt){
                     //Use Default Speech Device
                     currentSpeechDevices = settings.speechDeviceDefault
                 }
-                LOGTRACE("Last poll: ${state.lastPoll}")
+                LOGTRACE("TALK(${evt.name})|mP| Last poll: ${state.lastPoll}")
                 //Iterate Speech Devices and talk
 		        def attrs = currentSpeechDevices.supportedAttributes
                 currentSpeechDevices.each(){
             	    //if (state.speechDeviceType == "capability.musicPlayer"){
-                	    LOGDEBUG("attrs=${attrs}")
-                	    def currentStatus = it.latestValue('status')
-                	    def currentTrack = it.latestState("trackData")?.jsonValue
-                	    def currentVolume = it.latestState("level")?.integerValue ? it.currentState("level")?.integerValue : 0
-                	    LOGDEBUG("currentStatus:${currentStatus}")
-                	    LOGDEBUG("currentTrack:${currentTrack}")
-                	    LOGDEBUG("currentVolume:${currentVolume}")
-                        LOGDEBUG("Sound: ${state.sound.uri} , ${state.sound.duration}")
-                	    if (settings.speechVolume) { LOGTRACE("${it.displayName} | Volume: ${currentVolume}, Desired Volume: ${settings.speechVolume}") }
-                	    if (!(settings.speechVolume)) { LOGTRACE("${it.displayName} | Volume: ${currentVolume}") }
+                	    LOGDEBUG("TALK(${evt.name})|mP| attrs=${attrs}")
+                	    def currentStatus = it?.latestValue('status')
+                	    def currentTrack = it?.latestState("trackData")?.jsonValue
+                	    def currentVolume = it?.latestState("level")?.integerValue ? it.currentState("level")?.integerValue : 0
+                	    LOGDEBUG("TALK(${evt.name})|mP| currentStatus:${currentStatus}")
+                	    LOGDEBUG("TALK(${evt.name})|mP| currentTrack:${currentTrack}")
+                	    LOGDEBUG("TALK(${evt.name})|mP| currentVolume:${currentVolume}")
+                        LOGDEBUG("TALK(${evt.name})|mP| Sound: ${state.sound.uri} , ${state.sound.duration}")
+                	    if (settings?.speechVolume) { LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Desired Volume: ${settings.speechVolume}") }
+                	    if (!(settings?.speechVolume)) { LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}") }
                 	    if (!(currentTrack == null)){
                     	    //currentTrack has data
-                            if (!(currentTrack?.status == null)) { LOGTRACE("mP | ${it.displayName} | Current Status: ${currentStatus}, CurrentTrack: ${currentTrack}, CurrentTrack.Status: ${currentTrack.status}.") }
-                    	    if (currentTrack?.status == null) { LOGTRACE("mP | ${it.displayName} | Current Status: ${currentStatus}, CurrentTrack: ${currentTrack}.") }
+                            if (!(currentTrack?.status == null)) { LOGTRACE("TALK(${evt.name})|mP| mP | ${it.displayName} | Current Status: ${currentStatus}, CurrentTrack: ${currentTrack}, CurrentTrack.Status: ${currentTrack.status}.") }
+                    	    if (currentTrack?.status == null) { LOGTRACE("TALK(${evt.name})|mP| mP | ${it.displayName} | Current Status: ${currentStatus}, CurrentTrack: ${currentTrack}.") }
                     	    if (currentStatus == 'playing' || currentTrack?.status == 'playing') {
-    	                        LOGTRACE("${it.displayName} | cT<>null | cS/cT=playing | Sending playTrackAndResume().")
-        	                    if (settings.speechVolume) { 
+								LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT<>null | cS/cT=playing | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+        	                    if (settings?.speechVolume) { 
                 	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                     	        } else { 
@@ -3055,8 +3054,8 @@ def Talk(phrase, customSpeechDevice, evt){
                         	    }
                     	    } else
                     	    {
-                        	    LOGTRACE("mP | ${it.displayName} | cT<>null | cS/cT<>playing | Sending playTrackAndRestore().")
-                        	    if (settings.speechVolume) { 
+                        	    LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT<>null | cS/cT<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+                        	    if (settings?.speechVolume) { 
 	                                if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
 	                            } else { 
@@ -3067,11 +3066,11 @@ def Talk(phrase, customSpeechDevice, evt){
                 	    } else {
                     	    //currentTrack doesn't have data or is not supported on this device
                             if (!(currentStatus == null)) {
-                    	        LOGTRACE("mP | ${it.displayName} | (2) Current Status: ${currentStatus}.")
+                    	        LOGTRACE("TALK(${evt.name})|mP|  ${it.displayName} | (2) Current Status: ${currentStatus}.")
                                 if (currentStatus == "disconnected") {
 	                                //VLCThing?
-    	                            LOGTRACE("mP | ${it.displayName} | cT=null | cS=disconnected | Sending playTrackAndResume().")
-	                                if (settings.speechVolume) { 
+    	                            LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT=null | cS=disconnected | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+	                                if (settings?.speechVolume) { 
                     	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                         if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                         	        } else { 
@@ -3080,8 +3079,8 @@ def Talk(phrase, customSpeechDevice, evt){
                         	        }
                     	        } else {
     	                            if (currentStatus == "playing") {
-            	                        LOGTRACE("mP | ${it.displayName} | cT=null | cS=playing | Sending playTrackAndResume().")
-                	                    if (settings.speechVolume) { 
+            	                        LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT=null | cS=playing | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+                	                    if (settings?.speechVolume) { 
                         	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                             if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
                             	        } else { 
@@ -3089,8 +3088,8 @@ def Talk(phrase, customSpeechDevice, evt){
             	                            if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
                 	                    }
                     	            } else {
-                            	        LOGTRACE("mP | ${it.displayName} | cT=null | cS<>playing | Sending playTrackAndRestore().")
-                            	        if (settings.speechVolume) { 
+                            	        LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT=null | cS<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+                            	        if (settings?.speechVolume) { 
                                 	        if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                             if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
                             	        } else { 
@@ -3101,8 +3100,8 @@ def Talk(phrase, customSpeechDevice, evt){
                 	            }
                             } else {
                                 //currentTrack and currentStatus are both null
-                                LOGTRACE("mP | ${it.displayName} | (3) cT=null | cS=null | Sending playTrackAndRestore().")
-                                if (settings.speechVolume) { 
+                                LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | (3) cT=null | cS=null | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
+                                if (settings?.speechVolume) { 
                                     if (settings.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
                                 } else { 
@@ -3129,16 +3128,16 @@ def Talk(phrase, customSpeechDevice, evt){
 		        def attrs = currentSpeechDevices.supportedAttributes
                 currentSpeechDevices.each(){
 	                try {
-                    	LOGTRACE("sS | ${it.displayName} | Sending speak().")
+                    	LOGTRACE("TALK(${evt.name}) |sS| ${it.displayName} | Sending speak().")
                     }
                     catch (ex) {
-                    	LOGDEBUG("LOGTRACE it.displayName failed, trying it.device.displayName")
+                    	LOGDEBUG("TALK(${evt.name}) |sS| it.displayName failed, trying it.device.displayName")
                     	try {
-                    		LOGTRACE("sS | ${it.device.displayName} | Sending speak().")
+                    		LOGTRACE("TALK(${evt.name}) |sS| ${it.device.displayName} | Sending speak().")
                         }
                         catch (ex2) {
-                        	LOGDEBUG("LOGTRACE it.device.displayName failed, trying it.device.name")
-                        	LOGTRACE("sS | ${it.device.name} | Sending speak().")
+                        	LOGDEBUG("TALK(${evt.name}) |sS| it.device.displayName failed, trying it.device.name")
+                        	LOGTRACE("TALK(${evt.name}) |sS| ${it.device.name} | Sending speak().")
                         }
                     }
 	                it.speak(phrase)
@@ -3954,5 +3953,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.8a4"
+    state.appversion = "1.1.9a1"
 }
