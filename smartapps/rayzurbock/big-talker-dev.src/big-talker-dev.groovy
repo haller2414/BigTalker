@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9a2 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9a3.1 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -30,9 +30,9 @@ definition(
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
-    iconUrl: "http://rayzurbock.com/ST/icons/BigTalker-118.png",
-    iconX2Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-118.png",
-    iconX3Url: "http://rayzurbock.com/ST/icons/BigTalker@2x-118.png")
+    iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
+    iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png",
+    iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png")
 
 
 preferences {
@@ -2967,6 +2967,11 @@ def processPhraseVariables(phrase, evt){
     if (phrase.contains("80S")) { phrase = phrase.replace("80S","eighties") }
     if (phrase.contains("90S")) { phrase = phrase.replace("90S","nineties") }
     if (phrase.contains("100S")) { phrase = phrase.replace("100S","one hundreds") }
+    if (phrase.contains("%askalexa%")) {
+    	phrase=phrase.replace("%askalexa%","")
+    	LOGTRACE("Sending to AskAlexa: ${phrase}")
+        sendLocationEvent(name: "AskAlexaMsgQueue", value: "BigTalker-${state.appversion}", isStateChange: true, descriptionText: phrase)
+    }
     if (phrase.contains("%")) { phrase = phrase.replace("%"," percent ") }
     return phrase
 }
@@ -3962,5 +3967,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a2"
+    state.appversion = "1.1.9a3.1"
 }
