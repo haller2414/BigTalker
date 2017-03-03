@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9a3.2 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9a3.3 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -2971,7 +2971,7 @@ def processPhraseVariables(phrase, evt){
     if (phrase.contains("%askalexa%")) {
     	phrase=phrase.replace("%askalexa%","")
     	LOGTRACE("Sending to AskAlexa: ${phrase}")
-        sendLocationEvent(name: "AskAlexaMsgQueue", value: "BigTalker-${state.appversion}", isStateChange: true, descriptionText: phrase)
+        sendLocationEvent(name: "AskAlexaMsgQueue", value: "BigTalker", isStateChange: true, descriptionText: phrase)
     }
     if (phrase.contains("%")) { phrase = phrase.replace("%"," percent ") }
     return phrase
@@ -3972,5 +3972,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.2"
+    state.appversion = "1.1.9a3.3"
 }
