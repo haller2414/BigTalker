@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9a3.3 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9a3.4 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -54,6 +54,7 @@ preferences {
     page(name: "pageConfigSmoke")
     page(name: "pageConfigButton")
     page(name: "pageConfigTime")
+    page(name: "pageConfigSHM")
     page(name: "pageHelpPhraseTokens")
 //End preferences
 }
@@ -1564,6 +1565,108 @@ def pageStatus(){
             enabledDevices = ""
         }
         //END STATUS CONFIG BUTTON GROUP 3
+        //BEGIN STATUS CONFIG SMART HOME MONITOR
+        if (settings.SHMDeviceGroup1) {
+            enabledDevices += "Smart Home Monitor Status Change:  "
+            enabledDevices += "\n\n"
+            if (settings.SHMTalkOnAway) {
+                enabledDevices += "Say this when armed in Away mode:\n ${settings.SHMTalkOnAway}\n\n"
+            }
+			if (settings.SHMSpeechDeviceAway) {
+                enabledDevices += "Custom Speech Device(s):\n\n"
+                enabledDevices += "   "
+                settings.SHAMSpeechDeviceAway.each() {
+                    enabledDevices += "${it.displayName},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMModesAway) {
+                enabledDevices += "Custom mode(s):\n"
+                enabledDevices += "   "
+                settings.SHMModesAway.each() {
+                    enabledDevices += "${it},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMStartTimeAway) {
+                def customStartTime = getTimeFromDateString(settings.SHMStartTimeAway, true)
+                def customEndTime = getTimeFromDateString(settings.SHMEndTimeAway, true)
+                enabledDevices += "Custom Allowed Talk Time:\n ${customStartTime} - ${customEndTime}"
+                customStartTime = ""
+                customEndTime = ""
+            }
+            if (!(enabledDevices == "")) {
+                section ("Armed - Away:"){
+                    paragraph enabledDevices
+                }
+            }
+            enabledDevices = ""
+            if (settings.SHMTalkOnStay) {
+                enabledDevices += "Say this when armed in Stay mode:\n ${settings.SHMTalkOnStay}\n\n"
+            }
+			if (settings.SHMSpeechDeviceStay) {
+                enabledDevices += "Custom Speech Device(s):\n\n"
+                enabledDevices += "   "
+                settings.SHAMSpeechDeviceStay.each() {
+                    enabledDevices += "${it.displayName},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMModesStay) {
+                enabledDevices += "Custom mode(s):\n"
+                enabledDevices += "   "
+                settings.SHMModesStay.each() {
+                    enabledDevices += "${it},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMStartTimeStay) {
+                def customStartTime = getTimeFromDateString(settings.SHMStartTimeStay, true)
+                def customEndTime = getTimeFromDateString(settings.SHMEndTimeStay, true)
+                enabledDevices += "Custom Allowed Talk Time:\n ${customStartTime} - ${customEndTime}"
+                customStartTime = ""
+                customEndTime = ""
+            }
+            if (!(enabledDevices == "")) {
+                section ("Armed - Stay:"){
+                    paragraph enabledDevices
+                }
+            }
+            enabledDevices = ""
+            if (settings.SHMTalkOnDisarm) {
+                enabledDevices += "Say this when disarmed:\n ${settings.SHMTalkOnDisarm}\n\n"
+            }
+			if (settings.SHMSpeechDeviceDisarm) {
+                enabledDevices += "Custom Speech Device(s):\n\n"
+                enabledDevices += "   "
+                settings.SHMSpeechDeviceDisarm.each() {
+                    enabledDevices += "${it.displayName},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMModesDisarm) {
+                enabledDevices += "Custom mode(s):\n"
+                enabledDevices += "   "
+                settings.SHMModesDisarm.each() {
+                    enabledDevices += "${it},"
+                }
+                enabledDevices += "\n\n"
+            }
+            if (settings.SHMStartTimeDisarm) {
+                def customStartTime = getTimeFromDateString(settings.SHMStartTimeDisarm, true)
+                def customEndTime = getTimeFromDateString(settings.SHMEndTimeDisarm, true)
+                enabledDevices += "Custom Allowed Talk Time:\n ${customStartTime} - ${customEndTime}"
+                customStartTime = ""
+                customEndTime = ""
+            }
+            if (!(enabledDevices == "")) {
+                section ("Disarmed:"){
+                    paragraph enabledDevices
+                }
+            }
+            enabledDevices = ""
+        }
+        //END STATUS CONFIG SMART HOME MONITOR
     }
 }
 
@@ -1734,6 +1837,11 @@ def pageConfigureEvents(){
                 href "pageConfigButton", title: "Button", description:"Tap to configure"
             } else {
                 href "pageConfigButton", title: "Button", description:"Tap to configure"
+            }
+            if (settings.SHMDeviceGroup1) {
+                href "pageConfigSHM", title: "Smart Home Monitor", description:"Tap to configure"
+            } else {
+                href "pageConfigSHM", title: "Smart Home Monitor", description:"Tap to configure"
             }
         }
     }
@@ -2170,7 +2278,49 @@ def pageConfigButton(){
             href "pageHelpPhraseTokens", title:"Phrase Tokens", description:"Tap for a list of phrase tokens"
         }
     }
-//End pageConfigSmoke()
+//End pageConfigButton()
+}
+
+def pageConfigSHM(){
+    dynamicPage(name: "pageConfigSHM", title: "Configure talk on Smart Home Monitor status change", install: false, uninstall: false) {
+        section("Smart Home Monitor - Armed, Away"){
+            def defaultSpeechSHMAway = ""
+            if (settings.SHMTalkOnAway == null) {
+                defaultSpeechSHMAway = "Smart Home Monitor is now Armed in Away mode"
+            }
+            input name: "SHMTalkOnAway", type: "text", title: "Say this when Armed, Away:", required: false, defaultValue: defaultSpeechSHMAway
+            input name: "SHMSpeechDeviceAway", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "SHMModesAway", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
+            input name: "SHMStartTimeAway", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
+            input name: "SHMEndTimeAway", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeAway == null))
+        }
+        section("Smart Home Monitor - Armed, Stay"){
+        	def defaultSpeechSHMStay = ""
+            if (settings.SHMTalkOnStay == null) {
+                defaultSpeechSHMStay = "Smart Home Monitor is now Armed in Stay mode"
+            }
+            input name: "SHMTalkOnStay", type: "text", title: "Say this when Armed, Stay:", required: false, defaultValue: defaultSpeechSHMStay
+            input name: "SHMSpeechDeviceStay", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "SHMModesStay", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
+            input name: "SHMStartTimeStay", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
+            input name: "SHMEndTimeStay", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeStay == null))
+        }
+        section("Smart Home Monitor - Disarmed"){
+        	def defaultSpeechSHMDisarm = ""
+            if (settings.SHMTalkOnDisarm == null) {
+                defaultSpeechSHMDisarm = "Smart Home Monitor is now Disarmed"
+            }
+            input name: "SHMTalkOnDisarm", type: "text", title: "Say this when Disarmed:", required: false, defaultValue: defaultSpeechSHMDisarm
+            input name: "SHMSpeechDeviceDisarm", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "SHMModesDisarm", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
+            input name: "SHMStartTimeDisarm", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
+            input name: "SHMEndTimeDisarm", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeDisarm == null))
+        }
+        section("Help"){
+            href "pageHelpPhraseTokens", title:"Phrase Tokens", description:"Tap for a list of phrase tokens"
+        }
+    }
+//End pageConfigSHM()
 }
 
 def pageConfigTime(){
@@ -2321,6 +2471,8 @@ def initSubscribe(){
     if (buttonDeviceGroup1) { subscribe(buttonDeviceGroup1, "button", onButton1Event) }
     if (buttonDeviceGroup2) { subscribe(buttonDeviceGroup2, "button", onButton2Event) }
     if (buttonDeviceGroup3) { subscribe(buttonDeviceGroup3, "button", onButton3Event) }
+    //Subscribe SHM
+    if (SHMTalkOnAway || SHMTalkOnStay || SHMTalkOnDisarm) { subscribe(location, "alarmSystemStatus", onSHMEvent) }
     //Subscribe Mode
     if (modePhraseGroup1) { subscribe(location, onModeChangeEvent) }
     
@@ -2861,6 +3013,36 @@ def processButtonEvent(index, evt){
 }
 //END HANDLE BUTTON
 
+//BEGIN HANDLE SHM
+def onSHMEvent(evt){
+	if (evt.value == "away") {processSHMEvent(1, evt)}
+    if (evt.value == "stay") {processSHMEvent(2, evt)}
+    if (evt.value == "off") {processSHMEvent(3, evt)}
+}
+
+def processSHMEvent(index, evt){
+    LOGDEBUG("(onSHMEvent): ${evt.name}, ${index}, ${evt.value}")
+    //Are we in an allowed time period?
+    if (!(timeAllowed("SHM",index))) {
+        LOGDEBUG("Remain silent in current time period")
+        return
+    }
+    //Are we in a talking mode?
+    if (!(modeAllowed("SHM",index))) { 
+        LOGDEBUG("Remain silent while in mode ${location.mode}")
+        return
+    }
+    state.TalkPhrase = null
+    state.speechDevice = null
+    if (index == 1) {state.TalkPhrase = settings.SHMTalkOnAway; state.speechDevice = SHMSpeechDeviceAway}
+    if (index == 2) {state.TalkPhrase = settings.SHMTalkOnStay; state.speechDevice = SHMSpeechDeviceStay}
+    if (index == 3) {state.TalkPhrase = settings.SHMTalkOnDisarm; state.speechDevice = SHMSpeechDeviceDisarm}
+    Talk(state.TalkPhrase, state.speechDevice, evt)
+    state.TalkPhrase = null
+    state.speechDevice = null
+}
+//END HANDLE SHM
+
 def processPhraseVariables(phrase, evt){
     def zipCode = location.zipCode
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
@@ -3264,6 +3446,16 @@ def timeAllowed(devicetype,index){
             }
             if (index == 3 && (!(settings.buttonStartTime3 == null))) {
                 if (timeOfDayIsBetween(settings.buttonStartTime3, settings.buttonEndTime3, now, location.timeZone)) { return true } else { return false }
+            }
+        case "SHM":
+            if (index == 1 && (!(settings.SHMStartTimeAway == null))) {
+                if (timeOfDayIsBetween(settings.SHMStartTimeAway, settings.SHMEndTimeAway, now, location.timeZone)) { return true } else { return false }
+            }
+            if (index == 2 && (!(settings.SHMStartTimeStay == null))) {
+                if (timeOfDayIsBetween(settings.SHMStartTimeStay, settings.SHMEndTimeStay, now, location.timeZone)) { return true } else { return false }
+            }
+            if (index == 3 && (!(settings.SHMStartTimeDisarm == null))) {
+                if (timeOfDayIsBetween(settings.SHMStartTimeDisarm, settings.SHMEndTimeDisarm, now, location.timeZone)) { return true } else { return false }
             }
     }
     
@@ -3719,6 +3911,50 @@ def modeAllowed(devicetype,index) {
                 }
             }
         //End: case "button"
+        case "SHM":
+            if (index == 1) {
+                //SHM Armed Away
+                if (settings.SHMModesAway) {
+                    if (settings.SHMModesAway.contains(location.mode)) {
+                        //Custom mode for this event is in use and we are in one of those modes
+                        return true
+                    } else {
+                        //Custom mode for this event is in use and we are not in one of those modes
+                        return false
+                    }
+                } else {
+                    return (settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                }
+            }
+            if (index == 2) {
+                //SHM Armed Stay
+                if (settings.SHMModesStay) {
+                    if (settings.SHMModesStay.contains(location.mode)) {
+                        //Custom mode for this event is in use and we are in one of those modes
+                        return true
+                    } else {
+                        //Custom mode for this event is in use and we are not in one of those modes
+                        return false
+                    }
+                } else {
+                    return (settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                }
+            }
+            if (index == 3) {
+                //SHM Disarmed
+                if (settings.SHMModesDisarm) {
+                    if (settings.SHMModesDisarm.contains(location.mode)) {
+                        //Custom mode for this event is in use and we are in one of those modes
+                        return true
+                    } else {
+                        //Custom mode for this event is in use and we are not in one of those modes
+                        return false
+                    }
+                } else {
+                    return (settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                }
+            }
+        //End: case "SHM"
         case "timeSlot":
             if (index == 1) {
                 //TimeSlot Group 1
@@ -3972,5 +4208,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.3"
+    state.appversion = "1.1.9a3.4"
 }
