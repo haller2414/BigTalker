@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9a3.1 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9a3.2 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -77,7 +77,7 @@ def pageStart(){
         section("About"){
             def AboutApp = ""
             AboutApp += 'Big Talker is a SmartApp that can make your house talk depending on various triggered events.\n\n'
-            AboutApp += 'Pair with a SmartThings compatible audio device such as Sonos, Ubi, LANnouncer, VLC Thing (running on your computer or Raspberry Pi) or a DLNA device using the "Generic MediaRenderer" SmartApp/Device!\n\n'
+            AboutApp += 'Pair with a SmartThings compatible audio device such as Sonos, Ubi, LANnouncer, VLC Thing (running on your computer or Raspberry Pi), a DLNA device using the "Generic MediaRenderer" SmartApp/Device and/or AskAlexa SmartApp\n\n'
             AboutApp += 'You can contribute to the development of this SmartApp by making a PayPal donation to rayzur@rayzurbock.com or visit http://rayzurbock.com/store\n\n'
             if (!(state.appversion == null)){ 
                 AboutApp += "Big Talker ${state.appversion}\nhttp://www.github.com/rayzurbock\n" 
@@ -106,7 +106,7 @@ def pageStatus(){
         enabledDevices += "\n\n"
         enabledDevices += "Default Speech Devices:\n"
         enabledDevices += "   "
-        settings.speechDeviceDefault.each(){
+        settings.speechDeviceDefault?.each(){
             enabledDevices += "${it.displayName},"
         }
         enabledDevices += "\n\n"
@@ -1572,9 +1572,9 @@ def pageTalkNow(){
         section(""){
             paragraph ("Speak the following phrase:\nNote: must differ from the last spoken phrase\n")
             input name: "speechTalkNow", type: text, title: "Speak phrase", required: false, submitOnChange: true
-            input name: "talkNowSpeechDevice", type: state.speechDeviceType, title: "Talk with these text-to-speech devices", multiple: true, required: (!(settings.speechTalkNow == null)), submitOnChange: true
+            input name: "talkNowSpeechDevice", type: state.speechDeviceType, title: "Talk with these text-to-speech devices", multiple: true, required: false, submitOnChange: true
             //LOGDEBUG("previoustext=${state.lastTalkNow} New=${settings.speechTalkNow}")
-            if ((!(state.lastTalkNow == settings.speechTalkNow)) && (settings.talkNowSpeechDevice)){
+            if ((!(state.lastTalkNow == settings.speechTalkNow)) && ((settings.talkNowSpeechDevice) || settings.speechTalkNow.contains("%askalexa%"))){
                 //Say stuff!
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
                 Talk(settings.speechTalkNow, settings.talkNowSpeechDevice, customevent)
@@ -1591,6 +1591,7 @@ def pageHelpPhraseTokens(){
     dynamicPage(name: "pageHelpPhraseTokens", title: "Available Phrase Tokens", install: false, uninstall:false){
        section("The following tokens can be used in your event phrases and will be replaced as listed:"){
        	   def AvailTokens = ""
+           AvailTokens += "%askalexa% = Send phrase to AskAlexa SmartApp's message queue\n\n"
            AvailTokens += "%devicename% = Triggering devices display name\n\n"
            AvailTokens += "%devicetype% = Triggering device type; motion, switch, etc\n\n"
            AvailTokens += "%devicechange% = State change that occurred; on/off, active/inactive, etc...\n\n"
@@ -1620,9 +1621,9 @@ def pageConfigureSpeechDeviceType(){
         //section ("Speech Device Type Support"){
         section (){
             paragraph "${app.label} can support either 'Music Player' or 'Speech Synthesis' devices."
-            paragraph "'Music Player' typically supports devices such as Sonos, VLCThing, Generic Media Renderer.\n\n'Speech Synthesis' typically supports devices such as Ubi and LANnouncer.\n\nThis setting cannot be changed without reinstalling ${app.label}."
+            paragraph "'Music Player' typically supports devices such as Sonos, VLCThing, Generic Media Renderer.\n\n'Speech Synthesis' typically supports devices such as Ubi and LANnouncer.\n\nIf only using with AskAlexa this setting can be ignored.\n\nThis setting cannot be changed without reinstalling ${app.label}."
             input "speechDeviceType", "bool", title: "ON=Music Player\nOFF=Speech Synthesis", required: true, defaultValue: true, submitOnChange: true
-            paragraph "\nClick Next (top right) to continue configuration...\n"
+            paragraph "Click Next (top right) to continue configuration...\n"
             if (speechDeviceType == true || speechDeviceType == null) {state.speechDeviceType = "capability.musicPlayer"}
             if (speechDeviceType == false) {state.speechDeviceType = "capability.speechSynthesis"}
         }
@@ -1651,7 +1652,7 @@ def pageConfigureDefaults(){
     //dynamicPage(name: "pageConfigureDefaults", title: "Configure Defaults", nextPage: "${myNextPage}", install: false, uninstall: false) {
         section("Talk with:"){
            if (state.speechDeviceType == null || state.speechDeviceType == "") { state.speechDeviceType = "capability.musicPlayer" }
-           input "speechDeviceDefault", state.speechDeviceType, title: "Talk with these text-to-speech devices (default)", multiple: true, required: true, submitOnChange: false
+           input "speechDeviceDefault", state.speechDeviceType, title: "Talk with these text-to-speech devices (default)", multiple: true, required: false, submitOnChange: false
         }
         if (state.speechDeviceType == "capability.musicPlayer") {
             section ("Adjust volume during announcement (optional; Supports: Sonos, VLC-Thing):"){
@@ -2226,9 +2227,9 @@ def checkConfig() {
     if (!(state.speechDeviceType)){
        state.speechDeviceType = "capability.musicPlayer" //Set a default if the app was update and didn't contain settings.speechDeviceType
     }
-    if (!(settings.speechDeviceDefault)){
-        configErrorList += "  ** Default speech device(s) not selected,"
-    }
+//    if (!(settings.speechDeviceDefault)){
+//        configErrorList += "  ** Default speech device(s) not selected,"
+//    }
     if (!(state.installed == true)) {
 	    configErrorList += "  ** state.installed not True,"
 	}
@@ -2998,11 +2999,11 @@ def adjustWeatherPhrase(phraseIn){
 
 def Talk(phrase, customSpeechDevice, evt){
     def currentSpeechDevices = []
+    if (!(phrase == null)) {phrase = processPhraseVariables(phrase, evt)}
     if (state.speechDeviceType == "capability.musicPlayer"){
         state.sound = ""
         state.ableToTalk = false
-        if (!(phrase == null)) {
-            phrase = processPhraseVariables(phrase, evt)
+        if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
             LOGTRACE("TALK(${evt.name})|mP| >> ${phrase}")
             try {
                 state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
@@ -3125,8 +3126,7 @@ def Talk(phrase, customSpeechDevice, evt){
             } //!phrase == null
         } else {
             //capability.speechSynthesis is in use
-            if (!(phrase == null)) {
-                phrase = processPhraseVariables(phrase, evt)
+            if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
                 LOGTRACE("TALK(${evt.name}) |sS| >> ${phrase}")
                 if (!(customSpeechDevice == null)) {
                     currentSpeechDevices = customSpeechDevice
@@ -3919,7 +3919,12 @@ def poll(){
             LOGERROR("One of your speech devices is not responding.  Poll failed.")
         }
         state.lastPoll = getTimeFromCalendar(true,true)
-        myRunIn(60, poll)
+        if (!state.polledDevices == "") {
+        	//Reschedule next poll
+        	myRunIn(60, poll)
+        } else {
+        	LOGDEBUG("No speech devices polled. Cancelling polling.")
+        }
     }
 }
 def dopoll(pollSpeechDevice){
@@ -3967,5 +3972,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.1"
+    state.appversion = "1.1.9a3.2"
 }
