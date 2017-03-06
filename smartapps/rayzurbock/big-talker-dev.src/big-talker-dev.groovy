@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9a3.4 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9.a3.5 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -3181,6 +3181,9 @@ def adjustWeatherPhrase(phraseIn){
 
 def Talk(phrase, customSpeechDevice, evt){
     def currentSpeechDevices = []
+    def smartAppSpeechDevice = false
+    def spoke = false
+    if ((phrase.toLowerCase()).contains("%askalexa%")) {smartAppSpeechDevice = true}
     if (!(phrase == null)) {phrase = processPhraseVariables(phrase, evt)}
     if (state.speechDeviceType == "capability.musicPlayer"){
         state.sound = ""
@@ -3238,9 +3241,11 @@ def Talk(phrase, customSpeechDevice, evt){
         	                    if (settings?.speechVolume) { 
                 	                if (settings.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                     if (!(settings.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                    spoke = true
                     	        } else { 
                             	    if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
                             	    if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
+                                    spoke = true
                         	    }
                     	    } else
                     	    {
@@ -3251,9 +3256,11 @@ def Talk(phrase, customSpeechDevice, evt){
                         	    if (settings?.speechVolume) { 
 	                                if (settings?.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings?.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                    spoke = true
 	                            } else { 
             	                    if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
                 	                if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
+                                    spoke = true
                     	        }
                     	    }
                 	    } else {
@@ -3266,9 +3273,11 @@ def Talk(phrase, customSpeechDevice, evt){
 	                                if (settings?.speechVolume) { 
                     	                if (settings?.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                         if (!(settings?.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                        spoke = true
                         	        } else { 
                                         if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
                 	                    if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
+                                        spoke = true
                         	        }
                     	        } else {
     	                            if (currentStatus == "playing") {
@@ -3276,18 +3285,22 @@ def Talk(phrase, customSpeechDevice, evt){
                 	                    if (settings?.speechVolume) { 
                         	                if (settings?.speechVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
                                             if (!(settings?.speechVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                            spoke = true
                             	        } else { 
         	                                if (currentVolume >= 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
             	                            if (currentVolume < 50) { it.playTrackAndResume(state.sound.uri, state.sound.duration, 50) }
+                                            spoke = true
                 	                    }
                     	            } else {
                             	        LOGTRACE("TALK(${evt.name})|mP| ${it.displayName} | cT=null | cS<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${settings.speechVolume}")
                             	        if (settings?.speechVolume) { 
                                 	        if (settings?.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                             if (!(settings?.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                            spoke = true
                             	        } else { 
 	                                        if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
     	                                    if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
+                                            spoke = true
         	                            }
             	                    }
                 	            }
@@ -3297,45 +3310,56 @@ def Talk(phrase, customSpeechDevice, evt){
                                 if (settings?.speechVolume) { 
                                     if (settings?.speechVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
                                     if (!(settings?.speechVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, settings.speechVolume)}
+                                    spoke = true
                                 } else { 
 	                                if (currentVolume >= 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
     	                            if (currentVolume < 50) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, 50) }
+                                    spoke = true
         	                    }
                             }
                 	    }
                     } //currentSpeechDevices.each()
             	} //state.ableToTalk
-            } //!phrase == null
-        } else {
-            //capability.speechSynthesis is in use
-            if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
-                LOGTRACE("TALK(${evt.name}) |sS| >> ${phrase}")
-                if (!(customSpeechDevice == null)) {
-                    currentSpeechDevices = customSpeechDevice
-                } else {
-                    //Use Default Speech Device
-                    currentSpeechDevices = settings.speechDeviceDefault
-                }
-                //Iterate Speech Devices and talk
-		        def attrs = currentSpeechDevices.supportedAttributes
-                currentSpeechDevices.each(){
-	                try {
-                    	LOGTRACE("TALK(${evt.name}) |sS| ${it.displayName} | Sending speak().")
-                    }
-                    catch (ex) {
-                    	LOGDEBUG("TALK(${evt.name}) |sS| it.displayName failed, trying it.device.displayName")
-                    	try {
-                    		LOGTRACE("TALK(${evt.name}) |sS| ${it.device.displayName} | Sending speak().")
-                        }
-                        catch (ex2) {
-                        	LOGDEBUG("TALK(${evt.name}) |sS| it.device.displayName failed, trying it.device.name")
-                        	LOGTRACE("TALK(${evt.name}) |sS| ${it.device.name} | Sending speak().")
-                        }
-                    }
-	                it.speak(phrase)
-                }
-    	    } //!phrase == null
-        } //state.speechDeviceType
+            } //!speechDevice or customSpeechDevice == null
+        } else { //state.speechDeviceType=="capability.musicPlayer"
+        	if (state.speechDeviceType == "capability.speechSynthesis") {
+            	//capability.speechSynthesis is in use
+            	if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
+	                LOGTRACE("TALK(${evt.name}) |sS| >> ${phrase}")
+    	            if (!(customSpeechDevice == null)) {
+        	            currentSpeechDevices = customSpeechDevice
+            	    } else {
+                	    //Use Default Speech Device
+                    	currentSpeechDevices = settings.speechDeviceDefault
+                	}
+                	//Iterate Speech Devices and talk
+		        	def attrs = currentSpeechDevices.supportedAttributes
+                	currentSpeechDevices.each(){
+	                	try {
+                    		LOGTRACE("TALK(${evt.name}) |sS| ${it.displayName} | Sending speak().")
+                    	}
+                    	catch (ex) {
+	                    	LOGDEBUG("TALK(${evt.name}) |sS| it.displayName failed, trying it.device.displayName")
+    	                	try {
+        	            		LOGTRACE("TALK(${evt.name}) |sS| ${it.device.displayName} | Sending speak().")
+            	            }
+                	        catch (ex2) {
+                    	    	LOGDEBUG("TALK(${evt.name}) |sS| it.device.displayName failed, trying it.device.name")
+                        		LOGTRACE("TALK(${evt.name}) |sS| ${it.device.name} | Sending speak().")
+                        	}
+                    	}
+                        spoke = true
+	                	it.speak(phrase)
+                	}
+    	    	}
+            }
+        }
+	if (!smartAppSpeechDevice && !spoke) {
+	//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
+	LOGTRACE("TALK(${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
+	} else {
+		LOGTRACE("TALK(${evt.name}) |sA| Sent to another smartApp.")
+     }
 }//Talk()
 
 def timeAllowed(devicetype,index){
@@ -4208,5 +4232,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.4"
+    state.appversion = "1.1.9a3.5"
 }
