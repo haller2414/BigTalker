@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9.a3.7 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9.a3.8 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -66,6 +66,7 @@ def pageStart(){
     } 
     dynamicPage(name: "pageStart", title: "Big Talker", install: false, uninstall: state.installed){
         section(){
+        	def mydebug_pollnow = ""
             if (!(state.configOK)) { 
                 href "pageConfigureSpeechDeviceType", title:"Configure", description:"Tap to configure"
             } else {
@@ -73,11 +74,14 @@ def pageStart(){
                 href "pageConfigureDefaults", title: "Configure Defaults", description: "Tap to configure defaults"
                 href "pageConfigureEvents", title: "Configure Events", description: "Tap to configure events"
                 href "pageTalkNow", title:"Talk Now", description:"Tap to setup talk now" 
+                if ((settings?.debugmode == true) && (state.speechDeviceType == "capability.musicPlayer") && (settings?.resumePlay == true)) {
+            		input name: "debug_pollnow", type: "bool", title: "DEBUG: Poll Now (simply toggle)", multiple: false, required: false, submitOnChange: true, defaultValue: false
+            	if (!(settings.debug_pollnow == mydebug_pollnow)) { poll() }
+            }
             }
         }
         section("About"){
             def AboutApp = ""
-            def mydebug_pollnow = ""
             AboutApp += 'Big Talker is a SmartApp that can make your house talk depending on various triggered events.\n\n'
             AboutApp += 'Pair with a SmartThings compatible audio device such as Sonos, Ubi, LANnouncer, VLC Thing (running on your computer or Raspberry Pi), a DLNA device using the "Generic MediaRenderer" SmartApp/Device and/or AskAlexa SmartApp\n\n'
             AboutApp += 'You can contribute to the development of this SmartApp by making a PayPal donation to rayzur@rayzurbock.com or visit http://rayzurbock.com/store\n\n'
@@ -87,10 +91,6 @@ def pageStart(){
                 AboutApp += 'Big Talker \nhttp://www.github.com/rayzurbock\n'
             }
             paragraph(AboutApp)
-            if ((settings?.debugmode) && (state.speechDeviceType == "capability.musicPlayer")) {
-            	input name: "debug_pollnow", type: "bool", title: "DEBUG: Poll Now (simply toggle)", multiple: false, required: false, submitOnChange: true, defaultValue: false
-            	if (!(settings.debug_pollnow == mydebug_pollnow)) { poll() }
-            }
         }
     }
 }
@@ -1883,7 +1883,7 @@ def pageConfigureSpeechDeviceType(){
             paragraph "'Music Player' typically supports devices such as Sonos, VLCThing, Generic Media Renderer.\n\n'Speech Synthesis' typically supports devices such as Ubi and LANnouncer.\n\nIf only using with AskAlexa this setting can be ignored.\n\nThis setting cannot be changed without reinstalling ${app.label}."
             input "speechDeviceType", "bool", title: "ON=Music Player\nOFF=Speech Synthesis", required: true, defaultValue: true, submitOnChange: true
             paragraph "Click Next (top right) to continue configuration...\n"
-            if (speechDeviceType == true || speechDeviceType == null) {state.speechDeviceType = "capability.musicPlayer"}
+            if (speechDeviceType == true) {state.speechDeviceType = "capability.musicPlayer"}
             if (speechDeviceType == false) {state.speechDeviceType = "capability.speechSynthesis"}
         }
     }
@@ -1919,6 +1919,7 @@ def pageConfigureDefaults(){
             }
             section ("Attempt to resume playing audio (optional; Supports: Sonos, VLC-Thing):"){
             	input "resumePlay", "bool", title: "Resume Play:", required: true, defaultValue: true
+                input "allowScheduledPoll", "bool", title: "Enable polling device status (recommended)", required: true, defaultValue: true
             }
         }
         section ("Talk only while in these modes:"){
@@ -2621,7 +2622,9 @@ def installed() {
     //LOGTRACE("Installed with settings: ${settings}")
     LOGTRACE("Installed")
 	initialize()
-    myRunIn(60, poll)
+    if (((settings?.allowScheduledPoll == true || state?.allowScheduledPoll == true)) || ((settings?.allowScheduledPoll == null) || (state?.allowScheduledPoll == null))){ 
+    	myRunIn(60, poll) 
+    }
 //End installed()
 }
 
@@ -2632,7 +2635,9 @@ def updated() {
     LOGTRACE("Updated settings")
     unsubscribe()
     initialize()
-    myRunIn(60, poll)
+    if (((settings?.allowScheduledPoll == true || state?.allowScheduledPoll == true)) || ((settings?.allowScheduledPoll == null) || (state?.allowScheduledPoll == null))){ 
+    	myRunIn(60, poll) 
+    }
 //End updated()
 }
 
@@ -2641,6 +2646,9 @@ def checkConfig() {
     if (!(state.speechDeviceType)){
        state.speechDeviceType = "capability.musicPlayer" //Set a default if the app was update and didn't contain settings.speechDeviceType
     }
+    if ((settings?.allowScheduledPoll == true) && (settings?.resumePlay == true)) { state.allowScheduledPoll = true }
+    if ((settings?.allowScheduledPoll == null) || (settings?.resumePlay == null)) { state.allowScheduledPoll = true }
+	if ((settings?.allowScheduledPoll == false) || (settings?.resumePlay == false)) { state.allowScheduledPoll = false}
 //    if (!(settings.speechDeviceDefault)){
 //        configErrorList += "  ** Default speech device(s) not selected,"
 //    }
@@ -2800,6 +2808,7 @@ def processScheduledEvent(index, eventtime, alloweddays){
 				if (index == 3) {
 					if (!settings?.timeSlotResumePlay3 == null) { resume = settings.timeSlotResumePlay3 }
 				}
+                if (resume == null) { resume = true }
 			} else { resume = false }
             if (index == 1) { state.TalkPhrase = settings.timeSlotOnTime1; state.speechDevice = timeSlotSpeechDevice1}
             if (index == 2) { state.TalkPhrase = settings.timeSlotOnTime2; state.speechDevice = timeSlotSpeechDevice2}
@@ -2850,6 +2859,7 @@ def processMotionEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.motionResumePlay3 == null) { resume = settings.motionResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkActive1; state.speechDevice = motionSpeechDevice1}
@@ -2907,6 +2917,7 @@ def processSwitchEvent(index, evt){
 		if (index == 3) {
 			if (!(settings?.switchResumePlay3 == null)) { resume = settings.switchResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     LOGDEBUG("Resume in event = ${resume}")
     if (evt.value == "on") {
@@ -2962,6 +2973,7 @@ def processPresenceEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.presResumePlay3 == null) { resume = settings.presResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "present") {
         if (index == 1) { state.TalkPhrase = settings.presTalkOnArrive1; state.speechDevice = presSpeechDevice1}
@@ -3017,6 +3029,7 @@ def processLockEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.lockResumePlay3 == null) { resume = settings.lockResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "locked") {
         if (index == 1) { state.TalkPhrase = settings.lockTalkOnLock1; state.speechDevice = lockSpeechDevice1}
@@ -3071,6 +3084,7 @@ def processContactEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.contactResumePlay3 == null) { resume = settings.contactResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "open") {
         if (index == 1) { state.TalkPhrase = settings.contactTalkOnOpen1; state.speechDevice = contactSpeechDevice1}
@@ -3112,6 +3126,7 @@ def processModeChangeEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.modePhraseResumePlay3 == null) { resume = settings.modePhraseResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (settings.modePhraseGroup1.contains(location.mode)){
         if (!settings.modeExcludePhraseGroup1 == null){
@@ -3177,6 +3192,7 @@ def processThermostatEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.thermostatResumePlay3 == null) { resume = settings.thermostatResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "idle") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnIdle1; state.speechDevice = thermostatSpeechDevice1}
@@ -3244,6 +3260,7 @@ def processAccelerationEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.accelerationResumePlay3 == null) { resume = settings.accelerationResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.accelerationTalkOnActive1; state.speechDevice = accelerationSpeechDevice1}
@@ -3298,6 +3315,7 @@ def processWaterEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.waterResumePlay3 == null) { resume = settings.waterResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "wet") {
         if (index == 1) { state.TalkPhrase = settings.waterTalkOnWet1; state.speechDevice = waterSpeechDevice1}
@@ -3352,6 +3370,7 @@ def processSmokeEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.smokeResumePlay3 == null) { resume = settings.smokeResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (evt.value == "detected") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnDetect1; state.speechDevice = smokeSpeechDevice1}
@@ -3412,6 +3431,7 @@ def processButtonEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.buttonResumePlay3 == null) { resume = settings.buttonResumePlay3 }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (index == 1) { state.TalkPhrase = settings.buttonTalkOnPress1; state.speechDevice = buttonSpeechDevice1}
     if (index == 2) { state.TalkPhrase = settings.buttonTalkOnPress2; state.speechDevice = buttonSpeechDevice2}
@@ -3454,6 +3474,7 @@ def processSHMEvent(index, evt){
 		if (index == 3) {
 			if (!settings?.SHMResumePlayDisarm == null) { resume = settings.SHMResumePlayDisarm }
 		}
+        if (resume == null) { resume = true }
 	} else { resume = false }
     if (index == 1) {state.TalkPhrase = settings.SHMTalkOnAway; state.speechDevice = SHMSpeechDeviceAway}
     if (index == 2) {state.TalkPhrase = settings.SHMTalkOnStay; state.speechDevice = SHMSpeechDeviceStay}
@@ -3628,9 +3649,11 @@ def Talk(phrase, customSpeechDevice, resume, evt){
 					sendNotification("BigTalker couldn't announce: ${phrase}")
 				} //try again before final error(ableToTalk)
 			} //try (ableToTalk)
-			unschedule("poll")
-			LOGDEBUG("TALK(${evt.name})|mP| Delaying polling for 120 seconds")
-			myRunIn(120, poll)
+            if ((state?.allowScheduledPoll == true || state?.allowScheduledPoll == null) && (resume)) {
+				unschedule("poll")
+				LOGDEBUG("TALK(${evt.name})|mP| Delaying polling for 120 seconds")
+				myRunIn(120, poll)
+            }
 			if (state.ableToTalk){
 				state.sound.duration = (state.sound.duration.toInteger() + 5).toString()  //Try to prevent cutting out, add seconds to the duration
 				if (!(customSpeechDevice == null)) {
@@ -4626,56 +4649,70 @@ def getWeather(mode, zipCode) {
 }
 
 def poll(){
-	unschedule("poll")
-    if (state.speechDeviceType == "capability.musicPlayer") {
-        LOGDEBUG("Polling speech device(s) for latest status")
-        state.polledDevices = ""
-        try {
-            if (!(settings?.speechDeviceDefault == null)) {dopoll(settings.speechDeviceDefault)}
-            if (!(settings?.motionSpeechDevice1 == null)) {dopoll(settings.motionSpeechDevice1)}
-            if (!(settings?.motionSpeechDevice2 == null)) {dopoll(settings.motionSpeechDevice2)}
-            if (!(settings?.motionSpeechDevice3 == null)) {dopoll(settings.motionSpeechDevice3)}
-            if (!(settings?.switchSpeechDevice1 == null)) {dopoll(settings.switchSpeechDevice1)}
-            if (!(settings?.switchSpeechDevice2 == null)) {dopoll(settings.switchSpeechDevice2)}
-            if (!(settings?.switchSpeechDevice3 == null)) {dopoll(settings.switchSpeechDevice3)}
-            if (!(settings?.presSpeechDevice1 == null)) {dopoll(settings.presSpeechDevice1)}
-            if (!(settings?.presSpeechDevice2 == null)) {dopoll(settings.presSpeechDevice2)}
-            if (!(settings?.presSpeechDevice3 == null)) {dopoll(settings.presSpeechDevice3)}
-            if (!(settings?.lockSpeechDevice1 == null)) {dopoll(settings.lockSpeechDevice1)}
-            if (!(settings?.lockSpeechDevice2 == null)) {dopoll(settings.lockSpeechDevice2)}
-            if (!(settings?.lockSpeechDevice3 == null)) {dopoll(settings.lockSpeechDevice3)}
-            if (!(settings?.contactSpeechDevice1 == null)) {dopoll(settings.contactSpeechDevice1)}
-            if (!(settings?.contactSpeechDevice2 == null)) {dopoll(settings.contactSpeechDevice2)}
-            if (!(settings?.contactSpeechDevice3 == null)) {dopoll(settings.contactSpeechDevice3)}
-            if (!(settings?.modePhraseSpeechDevice1 == null)) {dopoll(settings.modePhraseSpeechDevice1)}
-            if (!(settings?.thermostatSpeechDevice1 == null)) {dopoll(settings.thermostatSpeechDevice1)}
-            if (!(settings?.accelerationSpeechDevice1 == null)) {dopoll(settings.accelerationSpeechDevice1)}
-            if (!(settings?.accelerationSpeechDevice2 == null)) {dopoll(settings.accelerationSpeechDevice2)}
-            if (!(settings?.accelerationSpeechDevice3 == null)) {dopoll(settings.accelerationSpeechDevice3)}
-            if (!(settings?.waterSpeechDevice1 == null)) {dopoll(settings.waterSpeechDevice1)}
-            if (!(settings?.waterSpeechDevice2 == null)) {dopoll(settings.waterSpeechDevice2)}
-            if (!(settings?.waterSpeechDevice3 == null)) {dopoll(settings.waterSpeechDevice3)}
-            if (!(settings?.smokeSpeechDevice1 == null)) {dopoll(settings.smokeSpeechDevice1)}
-            if (!(settings?.smokeSpeechDevice2 == null)) {dopoll(settings.smokeSpeechDevice2)}
-            if (!(settings?.smokeSpeechDevice3 == null)) {dopoll(settings.smokeSpeechDevice3)}
-            if (!(settings?.buttonSpeechDevice1 == null)) {dopoll(settings.buttonSpeechDevice1)}
-            if (!(settings?.buttonSpeechDevice2 == null)) {dopoll(settings.buttonSpeechDevice2)}
-            if (!(settings?.buttonSpeechDevice3 == null)) {dopoll(settings.buttonSpeechDevice3)}
-            if (!(settings?.timeslotSpeechDevice1 == null)) {dopoll(settings.timeslotSpeechDevice1)}
-            if (!(settings?.timeslotSpeechDevice2 == null)) {dopoll(settings.timeslotSpeechDevice2)}
-            if (!(settings?.timeslotSpeechDevice3 == null)) {dopoll(settings.timeslotSpeechDevice3)}
-        } catch(e) {
-            LOGERROR("One of your speech devices is not responding.  Poll failed.")
-        }
-        state.lastPoll = getTimeFromCalendar(true,true)
-        //LOGDEBUG("poll: state.polledDevices == ${state?.polledDevices}")
-        if (!(state?.polledDevices == "")) {
-        	//Reschedule next poll
-        	myRunIn(60, poll)
-        } else {
-        	LOGDEBUG("No speech devices polled. Cancelling polling.")
-        }
-    }
+    if (settings?.resumePlay == true || settings?.resumePlay == null) {
+		unschedule("poll")
+    	//LOGDEBUG("poll() settings=${settings?.allowScheduledPoll}")
+    	//LOGDEBUG("poll() state=${state?.allowScheduledPoll}")
+    	//LOGDEBUG("poll() resumePlay=${settings?.resumePlay}")
+    	if (((settings?.allowScheduledPoll == true || state?.allowScheduledPoll == true)) || ((settings?.allowScheduledPoll == null) || (state?.allowScheduledPoll == null))) {
+	    	state.allowScheduledPoll = true
+    	} else {
+    		state.allowScheduledPoll = false
+        	LOGDEBUG("Polling is not desired, disabling after this poll.")
+    	}
+    	if (state.speechDeviceType == "capability.musicPlayer") {
+        	LOGDEBUG("Polling speech device(s) for latest status")
+        	state.polledDevices = ""
+        	try {
+            	if (!(settings?.speechDeviceDefault == null)) {dopoll(settings.speechDeviceDefault)}
+            	if (!(settings?.motionSpeechDevice1 == null)) {dopoll(settings.motionSpeechDevice1)}
+            	if (!(settings?.motionSpeechDevice2 == null)) {dopoll(settings.motionSpeechDevice2)}
+            	if (!(settings?.motionSpeechDevice3 == null)) {dopoll(settings.motionSpeechDevice3)}
+            	if (!(settings?.switchSpeechDevice1 == null)) {dopoll(settings.switchSpeechDevice1)}
+            	if (!(settings?.switchSpeechDevice2 == null)) {dopoll(settings.switchSpeechDevice2)}
+            	if (!(settings?.switchSpeechDevice3 == null)) {dopoll(settings.switchSpeechDevice3)}
+            	if (!(settings?.presSpeechDevice1 == null)) {dopoll(settings.presSpeechDevice1)}
+            	if (!(settings?.presSpeechDevice2 == null)) {dopoll(settings.presSpeechDevice2)}
+            	if (!(settings?.presSpeechDevice3 == null)) {dopoll(settings.presSpeechDevice3)}
+            	if (!(settings?.lockSpeechDevice1 == null)) {dopoll(settings.lockSpeechDevice1)}
+            	if (!(settings?.lockSpeechDevice2 == null)) {dopoll(settings.lockSpeechDevice2)}
+            	if (!(settings?.lockSpeechDevice3 == null)) {dopoll(settings.lockSpeechDevice3)}
+            	if (!(settings?.contactSpeechDevice1 == null)) {dopoll(settings.contactSpeechDevice1)}
+            	if (!(settings?.contactSpeechDevice2 == null)) {dopoll(settings.contactSpeechDevice2)}
+            	if (!(settings?.contactSpeechDevice3 == null)) {dopoll(settings.contactSpeechDevice3)}
+            	if (!(settings?.modePhraseSpeechDevice1 == null)) {dopoll(settings.modePhraseSpeechDevice1)}
+            	if (!(settings?.thermostatSpeechDevice1 == null)) {dopoll(settings.thermostatSpeechDevice1)}
+            	if (!(settings?.accelerationSpeechDevice1 == null)) {dopoll(settings.accelerationSpeechDevice1)}
+            	if (!(settings?.accelerationSpeechDevice2 == null)) {dopoll(settings.accelerationSpeechDevice2)}
+            	if (!(settings?.accelerationSpeechDevice3 == null)) {dopoll(settings.accelerationSpeechDevice3)}
+            	if (!(settings?.waterSpeechDevice1 == null)) {dopoll(settings.waterSpeechDevice1)}
+            	if (!(settings?.waterSpeechDevice2 == null)) {dopoll(settings.waterSpeechDevice2)}
+            	if (!(settings?.waterSpeechDevice3 == null)) {dopoll(settings.waterSpeechDevice3)}
+            	if (!(settings?.smokeSpeechDevice1 == null)) {dopoll(settings.smokeSpeechDevice1)}
+            	if (!(settings?.smokeSpeechDevice2 == null)) {dopoll(settings.smokeSpeechDevice2)}
+            	if (!(settings?.smokeSpeechDevice3 == null)) {dopoll(settings.smokeSpeechDevice3)}
+            	if (!(settings?.buttonSpeechDevice1 == null)) {dopoll(settings.buttonSpeechDevice1)}
+            	if (!(settings?.buttonSpeechDevice2 == null)) {dopoll(settings.buttonSpeechDevice2)}
+            	if (!(settings?.buttonSpeechDevice3 == null)) {dopoll(settings.buttonSpeechDevice3)}
+            	if (!(settings?.timeslotSpeechDevice1 == null)) {dopoll(settings.timeslotSpeechDevice1)}
+            	if (!(settings?.timeslotSpeechDevice2 == null)) {dopoll(settings.timeslotSpeechDevice2)}
+            	if (!(settings?.timeslotSpeechDevice3 == null)) {dopoll(settings.timeslotSpeechDevice3)}
+        	} catch(e) {
+	            LOGERROR("One of your speech devices is not responding.  Poll failed.")
+    	    }
+        	state.lastPoll = getTimeFromCalendar(true,true)
+        	//LOGDEBUG("poll: state.polledDevices == ${state?.polledDevices}")
+        	if (!(state?.polledDevices == "")) {
+	        	//Reschedule next poll
+    	    	if (((settings?.allowScheduledPoll == true || state?.allowScheduledPoll == true)) || ((settings?.allowScheduledPoll == null) || (state?.allowScheduledPoll == null))) {
+        	    	LOGDEBUG("Rescheduling Poll")
+            	    myRunIn(60, poll) 
+            	}
+        	} else {
+        		LOGDEBUG("No speech devices polled. Cancelling polling.")
+        	}
+    	}
+	}
 }
 def dopoll(pollSpeechDevice){
     pollSpeechDevice.each(){
@@ -4747,5 +4784,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.7"
+    state.appversion = "1.1.9a3.8"
 }
