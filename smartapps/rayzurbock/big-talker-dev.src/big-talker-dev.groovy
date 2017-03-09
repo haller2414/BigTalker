@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9.a3.8 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9.a3.9 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -3625,9 +3625,14 @@ def Talk(phrase, customSpeechDevice, resume, evt){
     def currentSpeechDevices = []
     def smartAppSpeechDevice = false
     def spoke = false
-    if ((phrase.toLowerCase()).contains("%askalexa%")) {smartAppSpeechDevice = true}
+    if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
     if (!(phrase == null)) {phrase = processPhraseVariables(phrase, evt)}
-	if (state.speechDeviceType == "capability.musicPlayer"){
+    if (phrase == null) {
+    	LOGERROR("BigTalker - Check configuration. Phrase is empty for %devicename%")
+    	sendNotification(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
+    }
+    if (resume == null) { resume = true }
+	if ((state.speechDeviceType == "capability.musicPlayer") && (!( phrase==null ))){
 		state.sound = ""
 		state.ableToTalk = false
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
@@ -3830,7 +3835,7 @@ def Talk(phrase, customSpeechDevice, resume, evt){
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	}// if (state.speechDeviceType=="capability.musicPlayer")
 
-	if (state.speechDeviceType == "capability.speechSynthesis"){
+	if ((state.speechDeviceType == "capability.speechSynthesis") && (!( phrase==null ))){
 		//capability.speechSynthesis is in use
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
 			LOGTRACE("TALK(${evt.name}) |sS| >> ${phrase}")
@@ -3863,7 +3868,7 @@ def Talk(phrase, customSpeechDevice, resume, evt){
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	} //if (state.speechDeviceType == "capability.speechSynthesis")
 
-	if (!smartAppSpeechDevice && !spoke) {
+	if ((!(smartAppSpeechDevice)) && (!(spoke)) && (!(phrase == null))) {
 	//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
 	LOGTRACE("TALK(${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
 	} else {
@@ -4784,5 +4789,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.8"
+    state.appversion = "1.1.9a3.9"
 }
