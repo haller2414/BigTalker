@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9.a4.0 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9.a4.1 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -3452,7 +3452,7 @@ def processButtonEvent(index, evt){
 //BEGIN HANDLE SHM
 def onSHMEvent(evt){
 	if (evt.value == "away") {processSHMEvent(1, evt)}
-    if (evt.value == "home") {processSHMEvent(2, evt)}
+    if (evt.value == "stay") {processSHMEvent(2, evt)}
     if (evt.value == "off") {processSHMEvent(3, evt)}
 }
 
@@ -4800,5 +4800,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a4.0"
+    state.appversion = "1.1.9a4.1"
 }
