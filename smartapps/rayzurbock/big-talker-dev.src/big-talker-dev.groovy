@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.9.a3.9 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.9.a4.0 -- A SmartApp for SmartThings Home Automation System
  *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
  *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
@@ -1742,38 +1742,38 @@ def pageStatus(){
                 }
             }
             enabledDevices = ""
-            if (settings.SHMTalkOnStay) {
-                enabledDevices += "Say this when armed in Stay mode:\n ${settings.SHMTalkOnStay}\n\n"
+            if (settings.SHMTalkOnHome) {
+                enabledDevices += "Say this when armed in Home mode:\n ${settings.SHMTalkOnHome}\n\n"
             }
-			if (settings.SHMSpeechDeviceStay) {
+			if (settings.SHMSpeechDeviceHome) {
                 enabledDevices += "Custom Speech Device(s):\n\n"
                 enabledDevices += "   "
-                settings.SHAMSpeechDeviceStay.each() {
+                settings.SHAMSpeechDeviceHome.each() {
                     enabledDevices += "${it.displayName},"
                 }
                 enabledDevices += "\n\n"
             }
             if (state.speechDeviceType == "capability.musicPlayer") {
-        		enabledDevices += "Resume Audio: ${(!(settings.SHMResumePlayStay == null)) ? settings.SHMResumePlayStay : settings.resumePlay}"
+        		enabledDevices += "Resume Audio: ${(!(settings.SHMResumePlayHome == null)) ? settings.SHMResumePlayHome : settings.resumePlay}"
             	enabledDevices += "\n\n"
         	}
-            if (settings.SHMModesStay) {
+            if (settings.SHMModesHome) {
                 enabledDevices += "Custom mode(s):\n"
                 enabledDevices += "   "
-                settings.SHMModesStay.each() {
+                settings.SHMModesHome.each() {
                     enabledDevices += "${it},"
                 }
                 enabledDevices += "\n\n"
             }
-            if (settings.SHMStartTimeStay) {
-                def customStartTime = getTimeFromDateString(settings.SHMStartTimeStay, true)
-                def customEndTime = getTimeFromDateString(settings.SHMEndTimeStay, true)
+            if (settings.SHMStartTimeHome) {
+                def customStartTime = getTimeFromDateString(settings.SHMStartTimeHome, true)
+                def customEndTime = getTimeFromDateString(settings.SHMEndTimeHome, true)
                 enabledDevices += "Custom Allowed Talk Time:\n ${customStartTime} - ${customEndTime}"
                 customStartTime = ""
                 customEndTime = ""
             }
             if (!(enabledDevices == "")) {
-                section ("Armed - Stay:"){
+                section ("Armed - Home:"){
                     paragraph enabledDevices
                 }
             }
@@ -1859,7 +1859,7 @@ def pageHelpPhraseTokens(){
            AvailTokens += "%lastmode% = Last hub mode; home, away, etc\n\n"
            AvailTokens += "%mode% = Current hub mode; home, away, etc\n\n"
            AvailTokens += "%time% = Current hub time; HH:mm am/pm\n\n"
-           AvailTokens += "%shmstatus% = SmartHome Monitor Status (Disarmed, Armed Stay, Armed Away)\n\n"
+           AvailTokens += "%shmstatus% = SmartHome Monitor Status (Disarmed, Armed Home, Armed Away)\n\n"
            AvailTokens += "%weathercurrent% = Current weather based on hub location\n\n"
            AvailTokens += "%weathercurrent(00000)% = Current weather* based on custom zipcode (replace 00000)\n\n"
            AvailTokens += "%weathertoday% = Today's weather forecast* based on hub location\n\n"
@@ -2486,11 +2486,14 @@ def pageConfigButton(){
     dynamicPage(name: "pageConfigButton", title: "Configure talk on button press", install: false, uninstall: false) {
         section("Button Group 1"){
             def defaultSpeechButton1 = ""
+            def defaultSpeechButtonHold1 = ""
             if (!buttonDeviceGroup1) {
                 defaultSpeechButton1 = "%devicename% button pressed"
+                defaultSpeechButtonHold1 = "%devicename% button held"
             }
             input name: "buttonDeviceGroup1", type: "capability.button", title: "Button(s)", required: false, multiple: true
             input name: "buttonTalkOnPress1", type: "text", title: "Say this when pressed:", required: false, defaultValue: defaultSpeechButton1
+            input name: "buttonTalkOnHold1", type: "text", title: "Say this when held:", required: false, defaultValue: defaultSpeechButtonHold1
             input name: "buttonSpeechDevice1", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (state.speechDeviceType == "capability.musicPlayer") {
             	input name: "buttonResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
@@ -2502,6 +2505,7 @@ def pageConfigButton(){
         section("Button Group 2"){
             input name: "buttonDeviceGroup2", type: "capability.button", title: "Button(s)", required: false, multiple: true
             input name: "buttonTalkOnPress2", type: "text", title: "Say this when pressed:", required: false
+            input name: "buttonTalkOnHold2", type: "text", title: "Say this when held:", required: false
             input name: "buttonSpeechDevice2", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (state.speechDeviceType == "capability.musicPlayer") {
             	input name: "buttonResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
@@ -2513,6 +2517,7 @@ def pageConfigButton(){
         section("Button Group 3"){
             input name: "buttonDeviceGroup3", type: "capability.button", title: "Button(s)", required: false, multiple: true
             input name: "buttonTalkOnPress3", type: "text", title: "Say this when pressed:", required: false
+            input name: "buttonTalkOnHold3", type: "text", title: "Say this when held:", required: false
             input name: "buttonSpeechDevice3", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (state.speechDeviceType == "capability.musicPlayer") {
             	input name: "buttonResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
@@ -2544,19 +2549,19 @@ def pageConfigSHM(){
             input name: "SHMStartTimeAway", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "SHMEndTimeAway", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeAway == null))
         }
-        section("Smart Home Monitor - Armed, Stay"){
-        	def defaultSpeechSHMStay = ""
-            if (settings.SHMTalkOnStay == null) {
-                defaultSpeechSHMStay = "Smart Home Monitor is now Armed in Stay mode"
+        section("Smart Home Monitor - Armed, Home"){
+        	def defaultSpeechSHMHome = ""
+            if (settings.SHMTalkOnHome == null) {
+                defaultSpeechSHMHome = "Smart Home Monitor is now Armed in Home mode"
             }
-            input name: "SHMTalkOnStay", type: "text", title: "Say this when Armed, Stay:", required: false, defaultValue: defaultSpeechSHMStay
-            input name: "SHMSpeechDeviceStay", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "SHMTalkOnHome", type: "text", title: "Say this when Armed, Home:", required: false, defaultValue: defaultSpeechSHMHome
+            input name: "SHMSpeechDeviceHome", type: state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "SHMResumePlayStay", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "SHMResumePlayHome", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
             }
-            input name: "SHMModesStay", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
-            input name: "SHMStartTimeStay", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
-            input name: "SHMEndTimeStay", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeStay == null))
+            input name: "SHMModesHome", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
+            input name: "SHMStartTimeHome", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
+            input name: "SHMEndTimeHome", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.SHMStartTimeHome == null))
         }
         section("Smart Home Monitor - Disarmed"){
         	def defaultSpeechSHMDisarm = ""
@@ -2744,7 +2749,7 @@ def initSubscribe(){
     if (buttonDeviceGroup2) { subscribe(buttonDeviceGroup2, "button", onButton2Event) }
     if (buttonDeviceGroup3) { subscribe(buttonDeviceGroup3, "button", onButton3Event) }
     //Subscribe SHM
-    if (SHMTalkOnAway || SHMTalkOnStay || SHMTalkOnDisarm) { subscribe(location, "alarmSystemStatus", onSHMEvent) }
+    if (SHMTalkOnAway || SHMTalkOnHome || SHMTalkOnDisarm) { subscribe(location, "alarmSystemStatus", onSHMEvent) }
     //Subscribe Mode
     if (modePhraseGroup1) { subscribe(location, onModeChangeEvent) }
     
@@ -2919,7 +2924,6 @@ def processSwitchEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
-    LOGDEBUG("Resume in event = ${resume}")
     if (evt.value == "on") {
         if (index == 1) { state.TalkPhrase = settings.switchTalkOn1; state.speechDevice = switchSpeechDevice1}
         if (index == 2) { state.TalkPhrase = settings.switchTalkOn2; state.speechDevice = switchSpeechDevice2}
@@ -3433,9 +3437,12 @@ def processButtonEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
-    if (index == 1) { state.TalkPhrase = settings.buttonTalkOnPress1; state.speechDevice = buttonSpeechDevice1}
-    if (index == 2) { state.TalkPhrase = settings.buttonTalkOnPress2; state.speechDevice = buttonSpeechDevice2}
-    if (index == 3) { state.TalkPhrase = settings.buttonTalkOnPress3; state.speechDevice = buttonSpeechDevice3}
+    if (index == 1 && evt.value == "pushed") { state.TalkPhrase = settings.buttonTalkOnPress1; state.speechDevice = buttonSpeechDevice1}
+    if (index == 2 && evt.value == "pushed") { state.TalkPhrase = settings.buttonTalkOnPress2; state.speechDevice = buttonSpeechDevice2}
+    if (index == 3 && evt.value == "pushed") { state.TalkPhrase = settings.buttonTalkOnPress3; state.speechDevice = buttonSpeechDevice3}
+    if (index == 1 && evt.value == "held") { state.TalkPhrase = settings.buttonTalkOnHold1; state.speechDevice = buttonSpeechDevice1}
+    if (index == 2 && evt.value == "held") { state.TalkPhrase = settings.buttonTalkOnHold2; state.speechDevice = buttonSpeechDevice2}
+    if (index == 3 && evt.value == "held") { state.TalkPhrase = settings.buttonTalkOnHold3; state.speechDevice = buttonSpeechDevice3}
     Talk(state.TalkPhrase, state.speechDevice, resume, evt)
     state.TalkPhrase = null
     state.speechDevice = null
@@ -3445,7 +3452,7 @@ def processButtonEvent(index, evt){
 //BEGIN HANDLE SHM
 def onSHMEvent(evt){
 	if (evt.value == "away") {processSHMEvent(1, evt)}
-    if (evt.value == "stay") {processSHMEvent(2, evt)}
+    if (evt.value == "home") {processSHMEvent(2, evt)}
     if (evt.value == "off") {processSHMEvent(3, evt)}
 }
 
@@ -3469,7 +3476,7 @@ def processSHMEvent(index, evt){
 			if (!settings?.SHMResumePlayAway == null) { resume = settings.SHMResumePlayAway }
 		}
 		if (index == 2) {
-			if (!settings?.SHMResumePlayStay == null) { resume = settings.SHMResumePlayStay }
+			if (!settings?.SHMResumePlayHome == null) { resume = settings.SHMResumePlayHome }
 		}
 		if (index == 3) {
 			if (!settings?.SHMResumePlayDisarm == null) { resume = settings.SHMResumePlayDisarm }
@@ -3477,7 +3484,7 @@ def processSHMEvent(index, evt){
         if (resume == null) { resume = true }
 	} else { resume = false }
     if (index == 1) {state.TalkPhrase = settings.SHMTalkOnAway; state.speechDevice = SHMSpeechDeviceAway}
-    if (index == 2) {state.TalkPhrase = settings.SHMTalkOnStay; state.speechDevice = SHMSpeechDeviceStay}
+    if (index == 2) {state.TalkPhrase = settings.SHMTalkOnHome; state.speechDevice = SHMSpeechDeviceHome}
     if (index == 3) {state.TalkPhrase = settings.SHMTalkOnDisarm; state.speechDevice = SHMSpeechDeviceDisarm}
     Talk(state.TalkPhrase, state.speechDevice, resume, evt)
     state.TalkPhrase = null
@@ -3576,7 +3583,7 @@ def processPhraseVariables(phrase, evt){
     if (phrase.toLowerCase().contains("%shmstatus%")) {
     	def shmstatus = location.currentState("alarmSystemStatus")?.value
         LOGDEBUG("SHMSTATUS=${shmstatus}")
-		def shmmessage = [off : "Disarmed", away: "Armed, away", stay: "Armed, stay"][shmstatus] ?: shmstatus
+		def shmmessage = [off : "Disarmed", away: "Armed, away", home: "Armed, home"][shmstatus] ?: shmstatus
         LOGDEBUG("SHMMESSAGE=${shmmessage}")
         phrase = phrase.replace("%shmstatus%", shmmessage)
     }
@@ -3594,8 +3601,12 @@ def processPhraseVariables(phrase, evt){
     if (phrase.contains("100S")) { phrase = phrase.replace("100S","one hundreds") }
     if (phrase.contains("%askalexa%")) {
     	phrase=phrase.replace("%askalexa%","")
-    	LOGTRACE("Sending to AskAlexa: ${phrase}")
-        sendLocationEvent(name: "AskAlexaMsgQueue", value: "BigTalker", isStateChange: true, descriptionText: phrase)
+        if (!(phrase == "") && (!(phrase == null))){
+    		LOGTRACE("Sending to AskAlexa: ${phrase}.")
+	        sendLocationEvent(name: "AskAlexaMsgQueue", value: "BigTalker", isStateChange: true, descriptionText: phrase)
+        }else{
+        	LOGERROR("Phrase only contained %askalexa%. Nothing to say/send.")
+        }
     }
     if (phrase.contains("%")) { phrase = phrase.replace("%"," percent ") }
     return phrase
@@ -3626,13 +3637,13 @@ def Talk(phrase, customSpeechDevice, resume, evt){
     def smartAppSpeechDevice = false
     def spoke = false
     if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
-    if (!(phrase == null)) {phrase = processPhraseVariables(phrase, evt)}
-    if (phrase == null) {
-    	LOGERROR("BigTalker - Check configuration. Phrase is empty for %devicename%")
+    if (!(phrase == null) && !(phrase == "")) {phrase = processPhraseVariables(phrase, evt)}
+    if (phrase == null || phrase == "") {
+    	LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
     	sendNotification(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
     }
     if (resume == null) { resume = true }
-	if ((state.speechDeviceType == "capability.musicPlayer") && (!( phrase==null ))){
+	if ((state.speechDeviceType == "capability.musicPlayer") && (!( phrase==null ) && !(phrase==""))){
 		state.sound = ""
 		state.ableToTalk = false
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
@@ -3835,7 +3846,7 @@ def Talk(phrase, customSpeechDevice, resume, evt){
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	}// if (state.speechDeviceType=="capability.musicPlayer")
 
-	if ((state.speechDeviceType == "capability.speechSynthesis") && (!( phrase==null ))){
+	if ((state.speechDeviceType == "capability.speechSynthesis") && (!( phrase==null ) && !(phrase==""))){
 		//capability.speechSynthesis is in use
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
 			LOGTRACE("TALK(${evt.name}) |sS| >> ${phrase}")
@@ -3868,11 +3879,11 @@ def Talk(phrase, customSpeechDevice, resume, evt){
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	} //if (state.speechDeviceType == "capability.speechSynthesis")
 
-	if ((!(smartAppSpeechDevice)) && (!(spoke)) && (!(phrase == null))) {
+	if ((!(smartAppSpeechDevice) && !(spoke)) && (!(phrase == null) && !(phrase == ""))) {
 	//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
 	LOGTRACE("TALK(${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
 	} else {
-    	if (smartAppSpeechDevice && !spoke){
+    	if ((smartAppSpeechDevice && !spoke) && (!(phrase == null) && !(phrase == ""))){
 			LOGTRACE("TALK(${evt.name}) |sA| Sent to another smartApp.")
         }
      }
@@ -3991,8 +4002,8 @@ def timeAllowed(devicetype,index){
             if (index == 1 && (!(settings.SHMStartTimeAway == null))) {
                 if (timeOfDayIsBetween(settings.SHMStartTimeAway, settings.SHMEndTimeAway, now, location.timeZone)) { return true } else { return false }
             }
-            if (index == 2 && (!(settings.SHMStartTimeStay == null))) {
-                if (timeOfDayIsBetween(settings.SHMStartTimeStay, settings.SHMEndTimeStay, now, location.timeZone)) { return true } else { return false }
+            if (index == 2 && (!(settings.SHMStartTimeHome == null))) {
+                if (timeOfDayIsBetween(settings.SHMStartTimeHome, settings.SHMEndTimeHome, now, location.timeZone)) { return true } else { return false }
             }
             if (index == 3 && (!(settings.SHMStartTimeDisarm == null))) {
                 if (timeOfDayIsBetween(settings.SHMStartTimeDisarm, settings.SHMEndTimeDisarm, now, location.timeZone)) { return true } else { return false }
@@ -4467,9 +4478,9 @@ def modeAllowed(devicetype,index) {
                 }
             }
             if (index == 2) {
-                //SHM Armed Stay
-                if (settings.SHMModesStay) {
-                    if (settings.SHMModesStay.contains(location.mode)) {
+                //SHM Armed Home
+                if (settings.SHMModesHome) {
+                    if (settings.SHMModesHome.contains(location.mode)) {
                         //Custom mode for this event is in use and we are in one of those modes
                         return true
                     } else {
@@ -4789,5 +4800,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a3.9"
+    state.appversion = "1.1.9a4.0"
 }
