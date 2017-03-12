@@ -1,7 +1,6 @@
 /**  
- *  BIG TALKER -- Version 1.1.9.a4.1_OBSOLETE -- A SmartApp for SmartThings Home Automation System
- *  WARNING!  1.1.9 DEVELOPMENT BRANCH, May have unforseen bugs!
- *  Copyright 2014-2016 - rayzur@rayzurbock.com - Brian S. Lowrance
+ *  BIG TALKER -- Version 1.1.11 -- A SmartApp for SmartThings Home Automation System
+ *  Copyright 2014-2017 - brian@lowrance.cc - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
  *  This SmartApp is free. Donations to support development efforts are accepted via: 
@@ -25,14 +24,14 @@
  */
  
 definition(
-    name: "Big Talker-DEV",
+    name: "Big Talker",
     namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
-    iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
-    iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png",
-    iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png")
+    iconUrl: "http://lowrance.cc/ST/icons/BigTalker-110.png",
+    iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-110.png",
+    iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-110.png")
 
 
 preferences {
@@ -1822,7 +1821,7 @@ def pageStatus(){
 def pageTalkNow(){
     dynamicPage(name: "pageTalkNow", title: "Talk Now", install: false, uninstall: false){
         section(""){
-        	def myTalkNowResume = ""
+        	def myTalkNowResume = false
             paragraph ("Speak the following phrase:\nNote: must differ from the last spoken phrase\n")
             if (state.speechDeviceType == "capability.musicPlayer") {
             	input name: "talkNowResume", type: "bool", title: "Enable audio resume", multiple: true, required: false, submitOnChange: true, defaultValue: (settings?.resumePlay == false) ? false : true
@@ -1831,12 +1830,14 @@ def pageTalkNow(){
             input name: "speechTalkNow", type: text, title: "Speak phrase", required: false, submitOnChange: true
             input name: "talkNowSpeechDevice", type: state.speechDeviceType, title: "Talk with these text-to-speech devices", multiple: true, required: false, submitOnChange: true
             //LOGDEBUG("previoustext=${state.lastTalkNow} New=${settings.speechTalkNow}")
-            if ((!(state.lastTalkNow == settings.speechTalkNow)) && ((settings.talkNowSpeechDevice) || settings.speechTalkNow.contains("%askalexa%"))){
+            if (((!(state.lastTalkNow == settings.speechTalkNow)) && (settings.talkNowSpeechDevice)) || (settings.speechTalkNow?.contains("%askalexa%"))){
                 //Say stuff!
-                myTalkNowResume = (myTalkNowResume == "") ? settings.resumeAudio : true
-                if (settings?.talkNowResume == null) mytalkNowResume = true 
+                if (state.speechDeviceType == "capability.musicPlayer") {
+                	myTalkNowResume = (myTalkNowResume == "") ? settings.resumeAudio : true //use global setting if TalkNow is not set
+                	if (settings?.talkNowResume == null) {mytalkNowResume = true}  //default to true if not set.
+                }
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
-                Talk(settings.speechTalkNow, settings.talkNowSpeechDevice, talkNowResume, customevent)
+                Talk(settings.speechTalkNow, settings.talkNowSpeechDevice, myTalkNowResume, customevent)
                 state.lastTalkNow = settings.speechTalkNow
             }
         }
@@ -4800,5 +4801,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.9a4.1_OBSOLETE"
+    state.appversion = "1.1.11"
 }
