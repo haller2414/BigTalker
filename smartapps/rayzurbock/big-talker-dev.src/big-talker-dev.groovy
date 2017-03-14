@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.a2 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a3 -- A SmartApp for SmartThings Home Automation System
  * 
  *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
  *
@@ -3643,10 +3643,10 @@ def addPersonalityToPhrase(phrase, evt){
             //}
         }
     }
-    if ($i == 0) { return phrase }
+    if ($options == 0) { return phrase }
     def myRandom = 0
     myRandom = Math.abs(new Random().nextInt() % options) + 1
-    LOGDEBUG("i=${i};myRandom=${myRandom};phrase=${response[myRandom]}")
+    LOGDEBUG("options=${options};myRandom=${myRandom};phrase=${response[myRandom]}")
     if (response[myRandom].contains("{PRE}")) {
     	response[myRandom] = response[myRandom].replace("{PRE}", "")
         phrase = response[myRandom] + ", " + phrase
@@ -4861,5 +4861,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.a2"
+    state.appversion = "1.1.12.a3"
 }
