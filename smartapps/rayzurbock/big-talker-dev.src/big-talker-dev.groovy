@@ -25,7 +25,7 @@
  *  If modifying this project, please keep the above header in tact.
  *
  */
- 
+
 definition(
     name: "Big Talker-DEV",
     namespace: "rayzurbock",
@@ -35,7 +35,6 @@ definition(
     iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
     iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png",
     iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png")
-
 
 preferences {
     page(name: "pageStart")
@@ -3617,6 +3616,48 @@ def processPhraseVariables(phrase, evt){
     return phrase
 }
 
+def addPersonalityToPhrase(phrase, evt){
+	LOGDEBUG("addPersonalityToPhrase(${phrase},${evt})")
+    def response = new String[20]
+    response[0] = ""
+    def options = 0
+    def i = 0
+    if (evt.value == "on") {
+    	if (phrase.contains("light")){
+        	options = 4
+        	//for (i; i<=options; i++){
+    			response[i+1] = "{POST}please don't forget to turn the light off"
+            	response[i+2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
+                response[i+3] = "{POST}there goes the electricity bill!"
+                response[i+4] = "{PRE}Hey there"
+            //}
+        }
+    }
+    if (evt.value == "off") {
+    	if (phrase.contains("light")){
+        	options = 3
+            //for (i; i<=options; i++){
+            	response[i+1] = "{POST}It's about time!"
+                response[i+2] = "{POST}time to save some money!"
+                response[i+3] = "{PRE}Hey there, "
+            //}
+        }
+    }
+    if ($i == 0) { return phrase }
+    def myRandom = 0
+    myRandom = Math.abs(new Random().nextInt() % options) + 1
+    LOGDEBUG("i=${i};myRandom=${myRandom};phrase=${response[myRandom]}")
+    if (response[myRandom].contains("{PRE}")) {
+    	response[myRandom] = response[myRandom].replace("{PRE}", "")
+        phrase = response[myRandom] + ", " + phrase
+    }
+    if (response[myRandom].contains("{POST}")) {
+    	response[myRandom] = response[myRandom].replace("{POST}", "")
+        phrase = phrase + ", " + response[myRandom]
+    }
+    return phrase
+}
+
 def adjustWeatherPhrase(phraseIn){
     def phraseOut = ""
     phraseOut = phraseIn.toUpperCase()
@@ -3642,7 +3683,10 @@ def Talk(phrase, customSpeechDevice, resume, evt){
     def smartAppSpeechDevice = false
     def spoke = false
     if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
-    if (!(phrase == null) && !(phrase == "")) {phrase = processPhraseVariables(phrase, evt)}
+    if (!(phrase == null) && !(phrase == "")) {
+    	phrase = processPhraseVariables(phrase, evt)
+        phrase = addPersonalityToPhrase(phrase, evt)
+    }
     if (phrase == null || phrase == "") {
     	LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
     	sendNotification(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
