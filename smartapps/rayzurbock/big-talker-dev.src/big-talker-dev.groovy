@@ -1,5 +1,8 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.b1 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a2 -- A SmartApp for SmartThings Home Automation System
+ * 
+ *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
+ *
  *  Copyright 2014-2017 - brian@lowrance.cc - Brian S. Lowrance
  *  For the latest version, development and test releases visit http://www.github.com/rayzurbock
  *
@@ -24,14 +27,14 @@
  */
  
 definition(
-    name: "Big Talker",
+    name: "Big Talker-DEV",
     namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
-    iconUrl: "http://lowrance.cc/ST/icons/BigTalker-1112.png",
-    iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-1112.png",
-    iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-1112.png")
+    iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
+    iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png",
+    iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png")
 
 
 preferences {
@@ -4814,5 +4817,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.b1"
+    state.appversion = "1.1.12.a2"
 }
