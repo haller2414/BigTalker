@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.a3 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a4 -- A SmartApp for SmartThings Home Automation System
  * 
  *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
  *
@@ -3624,26 +3624,31 @@ def addPersonalityToPhrase(phrase, evt){
     def i = 0
     if (evt.value == "on") {
     	if (phrase.contains("light")){
-        	options = 4
+        	options = 6
         	//for (i; i<=options; i++){
     			response[i+1] = "{POST}please don't forget to turn the light off"
             	response[i+2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
                 response[i+3] = "{POST}there goes the electricity bill!"
-                response[i+4] = "{PRE}Hey there"
+                response[i+4] = "{POST}the same old thing everyday."
+                response[i+5] = "{POST}Thanks Thomas Jefferson!"
+                response[i+6] = "{PRE}Hey there"
             //}
         }
     }
     if (evt.value == "off") {
     	if (phrase.contains("light")){
-        	options = 3
+        	options = 6
             //for (i; i<=options; i++){
             	response[i+1] = "{POST}It's about time!"
                 response[i+2] = "{POST}time to save some money!"
-                response[i+3] = "{PRE}Hey there, "
+                response[i+3] = "{POST}wow, it's dark"
+                response[i+4] = "{POST}going green are we?"
+                response[i+5] = "{POST}I'll still be here, in the dark."
+                response[i+6] = "{PRE}Hey there, "
             //}
         }
     }
-    if ($options == 0) { return phrase }
+    if (options == 0) { return phrase }
     def myRandom = 0
     myRandom = Math.abs(new Random().nextInt() % options) + 1
     LOGDEBUG("options=${options};myRandom=${myRandom};phrase=${response[myRandom]}")
@@ -4861,5 +4866,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.a3"
+    state.appversion = "1.1.12.a4"
 }
