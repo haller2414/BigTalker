@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.a4 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a5 -- A SmartApp for SmartThings Home Automation System
  * 
  *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
  *
@@ -1934,6 +1934,7 @@ def pageConfigureDefaults(){
             input "defaultEndTime", "time", title: "Don't talk after: ", required: (!(settings.defaultStartTime == null)), submitOnChange: true
         }
         section(){
+            input "personalityMode", "bool", title: "Enable personality?", required: true, defaultValue: false
             input "debugmode", "bool", title: "Enable debug logging", required: true, defaultValue: false
         }
     }
@@ -3621,35 +3622,57 @@ def addPersonalityToPhrase(phrase, evt){
     def response = new String[20]
     response[0] = ""
     def options = 0
-    def i = 0
+    def genericresponse = new String[20]
+    genericresponse[0] = ""
+    def genericoptions = 0
+    def myRandom = 0
+    //SWITCHES BEGIN
     if (evt.value == "on") {
     	if (phrase.contains("light")){
         	options = 6
-        	//for (i; i<=options; i++){
-    			response[i+1] = "{POST}please don't forget to turn the light off"
-            	response[i+2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
-                response[i+3] = "{POST}there goes the electricity bill!"
-                response[i+4] = "{POST}the same old thing everyday."
-                response[i+5] = "{POST}Thanks Thomas Jefferson!"
-                response[i+6] = "{PRE}Hey there"
-            //}
+  			response[1] = "{POST}please don't forget to turn the light off"
+           	response[2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
+            response[3] = "{POST}there goes the electricity bill!"
+            response[4] = "{POST}the same old thing everyday."
+            response[5] = "{POST}Thanks Thomas Jefferson!"
+            response[6] = "{PRE}Oh, Hi"
         }
     }
     if (evt.value == "off") {
     	if (phrase.contains("light")){
         	options = 6
-            //for (i; i<=options; i++){
-            	response[i+1] = "{POST}It's about time!"
-                response[i+2] = "{POST}time to save some money!"
-                response[i+3] = "{POST}wow, it's dark"
-                response[i+4] = "{POST}going green are we?"
-                response[i+5] = "{POST}I'll still be here, in the dark."
-                response[i+6] = "{PRE}Hey there, "
-            //}
+           	response[1] = "{POST}It's about time!"
+            response[2] = "{POST}time to save some money!"
+            response[3] = "{POST}wow, it's dark"
+            response[4] = "{POST}going green are we?"
+            response[5] = "{POST}I'll still be here, in the dark."
+            response[6] = "{PRE}Oh, Hi"
         }
     }
+    //SWITCHES END
+    def UseGenericRandom = 0
+    myRandom = Math.abs(new Random().nextInt() % 10) + 1
+    if (myRandom == 1 || myRandom == 4 || myRandom == 7) {
+    	//GENERIC RESPONSES BEGIN
+    	genericoptions = 4
+    	genericresponse[1] = "{PRE}Hey there"
+    	genericresponse[2] = "{PRE}Don't mean to bother but"
+        genericresponse[3] = "{PRE}All I know is"
+        genericresponse[4] = "{POST}that's is all I know."
+    	//GENERIC RESPONSES END
+    	myRandom = Math.abs(new Random().nextInt() % genericoptions) + 1
+        LOGDEBUG("genericoptions=${genericoptions};myRandom=${myRandom};phrase=${genericresponse[myRandom]}")
+    	if (genericresponse[myRandom].contains("{PRE}")) {
+    		genericresponse[myRandom] = genericresponse[myRandom].replace("{PRE}", "")
+        	phrase = genericresponse[myRandom] + ", " + phrase
+    	}
+    	if (genericresponse[myRandom].contains("{POST}")) {
+    		genericresponse[myRandom] = genericresponse[myRandom].replace("{POST}", "")
+        	phrase = phrase + ", " + genericresponse[myRandom]
+    	}
+        return phrase
+    }
     if (options == 0) { return phrase }
-    def myRandom = 0
     myRandom = Math.abs(new Random().nextInt() % options) + 1
     LOGDEBUG("options=${options};myRandom=${myRandom};phrase=${response[myRandom]}")
     if (response[myRandom].contains("{PRE}")) {
@@ -3690,7 +3713,7 @@ def Talk(phrase, customSpeechDevice, resume, evt){
     if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
     if (!(phrase == null) && !(phrase == "")) {
     	phrase = processPhraseVariables(phrase, evt)
-        phrase = addPersonalityToPhrase(phrase, evt)
+        if (settings?.personalityMode == true) { phrase = addPersonalityToPhrase(phrase, evt) }
     }
     if (phrase == null || phrase == "") {
     	LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
@@ -4866,5 +4889,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.a4"
+    state.appversion = "1.1.12.a5"
 }
