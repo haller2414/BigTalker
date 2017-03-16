@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.a5 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a6 -- A SmartApp for SmartThings Home Automation System
  * 
  *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
  *
@@ -3634,7 +3634,7 @@ def addPersonalityToPhrase(phrase, evt){
            	response[2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
             response[3] = "{POST}there goes the electricity bill!"
             response[4] = "{POST}the same old thing everyday."
-            response[5] = "{POST}Thanks Thomas Jefferson!"
+            response[5] = "{POST}Thanks Thomas Edison!"
             response[6] = "{PRE}Oh, Hi"
         }
     }
@@ -4889,5 +4889,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.a5"
+    state.appversion = "1.1.12.a6"
 }
