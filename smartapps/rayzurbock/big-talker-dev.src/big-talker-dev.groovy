@@ -1,5 +1,5 @@
 /**  
- *  BIG TALKER -- Version 1.1.12.a6 -- A SmartApp for SmartThings Home Automation System
+ *  BIG TALKER -- Version 1.1.12.a7 -- A SmartApp for SmartThings Home Automation System
  * 
  *  WARNING: DEVELOPMENT VERSION - Likely bugs, missing or partially implemented features
  *
@@ -3644,7 +3644,7 @@ def addPersonalityToPhrase(phrase, evt){
            	response[1] = "{POST}It's about time!"
             response[2] = "{POST}time to save some money!"
             response[3] = "{POST}wow, it's dark"
-            response[4] = "{POST}going green are we?"
+            response[4] = "{POST}going green, are we?"
             response[5] = "{POST}I'll still be here, in the dark."
             response[6] = "{PRE}Oh, Hi"
         }
@@ -3658,7 +3658,7 @@ def addPersonalityToPhrase(phrase, evt){
     	genericresponse[1] = "{PRE}Hey there"
     	genericresponse[2] = "{PRE}Don't mean to bother but"
         genericresponse[3] = "{PRE}All I know is"
-        genericresponse[4] = "{POST}that's is all I know."
+        genericresponse[4] = "{POST}that is all I know."
     	//GENERIC RESPONSES END
     	myRandom = Math.abs(new Random().nextInt() % genericoptions) + 1
         LOGDEBUG("genericoptions=${genericoptions};myRandom=${myRandom};phrase=${genericresponse[myRandom]}")
@@ -4889,5 +4889,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "1.1.12.a6"
+    state.appversion = "1.1.12.a7"
 }
