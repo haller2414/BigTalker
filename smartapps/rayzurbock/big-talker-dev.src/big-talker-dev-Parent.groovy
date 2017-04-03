@@ -52,7 +52,7 @@ def pageStart(){
                 }
             }
         }
-        section("Debug"){
+        section(){
         	if ((settings?.debugmode == true) && (state.speechDeviceType == "capability.musicPlayer") && (settings?.resumePlay == true)) {
             		input name: "debug_pollnow", type: "bool", title: "DEBUG: Poll Now (simply toggle)", multiple: false, required: false, submitOnChange: true, defaultValue: false
             		if (!(settings.debug_pollnow == mydebug_pollnow)) { poll() }
@@ -1980,8 +1980,6 @@ def initialize() {
         state.polledDevices = ""
         return //App not properly configured, exit, don't subscribe
     }
-    initSchedule()
-    initSubscribe()
     LOGTRACE("Initialized (Parent Version: ${state.appVersion})")
     sendNotificationEvent("${app.label.replace(" ","").toUpperCase()}: Settings activated")
     state.lastMode = location.mode
@@ -3381,5 +3379,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "Parent-2.0.a1"
+    state.appversion = "Parent-2.0.a2"
 }
