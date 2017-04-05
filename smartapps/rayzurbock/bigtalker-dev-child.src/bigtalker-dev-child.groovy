@@ -1648,7 +1648,7 @@ def processMotionEvent(index, evt){
         if (index == 1) { state.TalkPhrase = settings.motionTalkActive1; state.speechDevice = motionSpeechDevice1}
         if (index == 2) { state.TalkPhrase = settings.motionTalkActive2; state.speechDevice = motionSpeechDevice2}
         if (index == 3) { state.TalkPhrase = settings.motionTalkActive3; state.speechDevice = motionSpeechDevice3}
-        if (!(state?.TalkPhrase == null)) {Talk(app.label,state.TalkPhrase, state.speechDevice, resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "inactive") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkInactive1; state.speechDevice = motionSpeechDevice1}
