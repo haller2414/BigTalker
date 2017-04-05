@@ -1,10 +1,10 @@
 definition(
     name: "BigTalker-DEV-Child",
-    namespace: "rayzurbock/BigTalker",
+    namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
-    parent: "rayzurbock/BigTalker:BigTalker-DEV-Parent",
+    parent: "rayzurbock:BigTalker-DEV-Parent",
     iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
     iconX2Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png",
     iconX3Url: "http://lowrance.cc/ST/icons/BigTalker@2x-AlphaVersion.png")
