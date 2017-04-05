@@ -1,6 +1,6 @@
 definition(
     name: "BigTalker-DEV-Parent",
-    namespace: "rayzurbock/BigTalker",
+    namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
     description: "Let's talk about mode changes, switches, motions, and so on.",
     category: "Fun & Social",
@@ -22,7 +22,7 @@ preferences {
 def pageStart(){
     state.childAppName = "BigTalker-DEV-Child"
     state.parentAppName = "BigTalker-DEV-Parent"
-    state.namespace = "rayzurbock/BigTalker"
+    state.namespace = "rayzurbock"
 	setAppVersion()
     if (checkConfig()) { 
         // Do nothing here, but run checkConfig() 
