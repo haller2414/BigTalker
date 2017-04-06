@@ -2,7 +2,7 @@ definition(
     name: "BigTalker-DEV-Child",
     namespace: "rayzurbock",
     author: "rayzur@rayzurbock.com",
-    description: "Let's talk about mode changes, switches, motions, and so on.",
+    description: "Dependency for BigTalker-DEV-Parent -- Save but don't install/publish",
     category: "Fun & Social",
     parent: "rayzurbock:BigTalker-DEV-Parent",
     iconUrl: "http://lowrance.cc/ST/icons/BigTalker-AlphaVersion.png",
@@ -114,7 +114,7 @@ def pageConfigMotion(){
             input name: "motionTalkInactive1", type: "text", title: "Say this on motion inactive:", required: false, defaultValue: defaultSpeechInactive1
             input name: "motionSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "motionResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "motionResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "motionModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -126,7 +126,7 @@ def pageConfigMotion(){
             input name: "motionTalkInactive2", type: "text", title: "Say this on motion inactive:", required: false
             input name: "motionSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "motionResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "motionResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "motionModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -138,7 +138,7 @@ def pageConfigMotion(){
             input name: "motionTalkInactive3", type: "text", title: "Say this on motion inactive:", required: false
             input name: "motionSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "motionResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "motionResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "motionModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -165,7 +165,7 @@ def pageConfigSwitch(){
             input name: "switchTalkOff1", type: "text", title: "Say this when switch is turned OFF:", required: false, defaultValue: defaultSpeechOff1
             input name: "switchSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "switchResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "switchResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "switchModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -177,7 +177,7 @@ def pageConfigSwitch(){
             input name: "switchTalkOff2", type: "text", title: "Say this when switch is turned OFF:", required: false
             input name: "switchSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "switchResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "switchResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "switchModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -189,7 +189,7 @@ def pageConfigSwitch(){
             input name: "switchTalkOff3", type: "text", title: "Say this when switch is turned OFF:", required: false
             input name: "switchSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "switchResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "switchResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "switchModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -216,7 +216,7 @@ def pageConfigPresence(){
             input name: "presTalkOnLeave1", type: "text", title: "Say this when someone leaves:", required: false, defaultValue: defaultSpeechLeave1
             input name: "presSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "presResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "presResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "presModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "presStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -228,7 +228,7 @@ def pageConfigPresence(){
             input name: "presTalkOnLeave2", type: "text", title: "Say this when someone leaves:", required: false
             input name: "presSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "presResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "presResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "presModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "presStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -240,7 +240,7 @@ def pageConfigPresence(){
             input name: "presTalkOnLeave3", type: "text", title: "Say this when someone leaves:", required: false
             input name: "presSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "presResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "presResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "presModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "presStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -267,7 +267,7 @@ def pageConfigLock(){
             input name: "lockTalkOnLock1", type: "text", title: "Say this when locked:", required: false, defaultValue: defaultSpeechLock1
             input name: "lockSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "lockResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "lockResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "lockModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "lockStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -279,7 +279,7 @@ def pageConfigLock(){
             input name: "lockTalkOnLock2", type: "text", title: "Say this when locked:", required: false
             input name: "lockSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "lockResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "lockResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "lockModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "lockStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -291,7 +291,7 @@ def pageConfigLock(){
             input name: "lockTalkOnLock3", type: "text", title: "Say this when locked:", required: false
             input name: "lockSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "lockResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "lockResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "lockModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "lockStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -318,7 +318,7 @@ def pageConfigContact(){
             input name: "contactTalkOnClose1", type: "text", title: "Say this when closed:", required: false, defaultValue: defaultSpeechClose1
             input name: "contactSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "contactResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "contactResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "contactModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "contactStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -330,7 +330,7 @@ def pageConfigContact(){
             input name: "contactTalkOnClose2", type: "text", title: "Say this when closed:", required: false
             input name: "contactSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "contactResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "contactResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "contactModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "contactStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -342,7 +342,7 @@ def pageConfigContact(){
             input name: "contactTalkOnClose3", type: "text", title: "Say this when closed:", required: false
             input name: "contactSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "contactResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "contactResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "contactModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "contactStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -372,7 +372,7 @@ def pageConfigMode(){
             input name: "TalkOnModeChange1", type: "text", title: "Say this when home mode is changed", required: false, defaultValue: defaultSpeechMode1
             input name: "modePhraseSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "modePhraseResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "modePhraseResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "modeStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "modeEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.modeStartTime1 == null))
@@ -404,7 +404,7 @@ def pageConfigThermostat(){
             input name: "thermostatTalkOnFan1", type: "text", title: "Say this on change to fan only:", required: false, defaultValue: defaultSpeechFan1
             input name: "thermostatSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "thermostateResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "thermostateResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "thermostatModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "thermostatStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -431,7 +431,7 @@ def pageConfigAcceleration(){
             input name: "accelerationTalkOnInactive1", type: "text", title: "Say this when inactivated:", required: false, defaultValue: defaultSpeechInactive1
             input name: "accelerationSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "accelerationResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "accelerationResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "accelerationModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "accelerationStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -443,7 +443,7 @@ def pageConfigAcceleration(){
             input name: "accelerationTalkOnInactive2", type: "text", title: "Say this when inactivated:", required: false
             input name: "accelerationSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "accelerationResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "accelerationResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "accelerationModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "accelerationStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -455,7 +455,7 @@ def pageConfigAcceleration(){
             input name: "accelerationTalkOnInactive3", type: "text", title: "Say this when inactivated:", required: false
             input name: "accelerationSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "accelerationResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "accelerationResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "accelerationModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "accelerationStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -482,7 +482,7 @@ def pageConfigWater(){
             input name: "waterTalkOnDry1", type: "text", title: "Say this when dry:", required: false, defaultValue: defaultSpeechDry1
             input name: "waterSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "waterResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "waterResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "waterModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "waterStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -494,7 +494,7 @@ def pageConfigWater(){
             input name: "waterTalkOnDry2", type: "text", title: "Say this when dry:", required: false
             input name: "waterSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "waterResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "waterResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "waterModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "waterStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -506,7 +506,7 @@ def pageConfigWater(){
             input name: "waterTalkOnDry3", type: "text", title: "Say this when dry:", required: false
             input name: "waterSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "waterResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "waterResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "waterModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "waterStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -536,7 +536,7 @@ def pageConfigSmoke(){
             input name: "smokeTalkOnTest1", type: "text", title: "Say this when tested:", required: false, defaultValue: defaultSpeechTest1
             input name: "smokeSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "smokeResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "smokeResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "smokeModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "smokeStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -549,7 +549,7 @@ def pageConfigSmoke(){
             input name: "smokeTalkOnTest2", type: "text", title: "Say this when tested:", required: false
             input name: "smokeSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "smokeResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "smokeResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "smokeModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "smokeStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -562,7 +562,7 @@ def pageConfigSmoke(){
             input name: "smokeTalkOnTest3", type: "text", title: "Say this when tested:", required: false
             input name: "smokeSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "smokeResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "smokeResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "smokeModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "smokeStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -589,7 +589,7 @@ def pageConfigButton(){
             input name: "buttonTalkOnHold1", type: "text", title: "Say this when held:", required: false, defaultValue: defaultSpeechButtonHold1
             input name: "buttonSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "buttonResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "buttonResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "buttonModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "buttonStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -601,7 +601,7 @@ def pageConfigButton(){
             input name: "buttonTalkOnHold2", type: "text", title: "Say this when held:", required: false
             input name: "buttonSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "buttonResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "buttonResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "buttonModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "buttonStartTime2", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -613,7 +613,7 @@ def pageConfigButton(){
             input name: "buttonTalkOnHold3", type: "text", title: "Say this when held:", required: false
             input name: "buttonSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "buttonResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "buttonResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "buttonModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "buttonStartTime3", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -636,7 +636,7 @@ def pageConfigSHM(){
             input name: "SHMTalkOnAway", type: "text", title: "Say this when Armed, Away:", required: false, defaultValue: defaultSpeechSHMAway
             input name: "SHMSpeechDeviceAway", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "SHMResumePlayAway", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "SHMResumePlayAway", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "SHMModesAway", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeAway", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -650,7 +650,7 @@ def pageConfigSHM(){
             input name: "SHMTalkOnHome", type: "text", title: "Say this when Armed, Home:", required: false, defaultValue: defaultSpeechSHMHome
             input name: "SHMSpeechDeviceHome", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "SHMResumePlayHome", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "SHMResumePlayHome", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "SHMModesHome", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeHome", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -664,7 +664,7 @@ def pageConfigSHM(){
             input name: "SHMTalkOnDisarm", type: "text", title: "Say this when Disarmed:", required: false, defaultValue: defaultSpeechSHMDisarm
             input name: "SHMSpeechDeviceDisarm", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "SHMResumePlayDisarm", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "SHMResumePlayDisarm", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "SHMModesDisarm", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeDisarm", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -685,7 +685,7 @@ def pageConfigTime(){
             input name: "timeSlotOnTime1", type: "text", title: "Say on schedule:", required: false
             input name: "timeSlotSpeechDevice1", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "timeSlotResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "timeSlotResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "timeSlotModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
         }
@@ -695,7 +695,7 @@ def pageConfigTime(){
             input name: "timeSlotOnTime2", type: "text", title: "Say on schedule:", required: false
             input name: "timeSlotSpeechDevice2", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "timeSlotResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "timeSlotResumePlay2", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "timeSlotModes2", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
         }
@@ -705,7 +705,7 @@ def pageConfigTime(){
             input name: "timeSlotOnTime3", type: "text", title: "Say on schedule:", required: false
             input name: "timeSlotSpeechDevice3", type: parent.state.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent.state.speechDeviceType == "capability.musicPlayer") {
-            	input name: "timeSlotResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (settings?.resumePlay == false) ? false : true
+            	input name: "timeSlotResumePlay3", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
             }
             input name: "timeSlotModes3", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
         }
@@ -750,7 +750,6 @@ def initialize() {
     initSchedule()
     initSubscribe()
     LOGTRACE("Initialized (Parent Version: ${parent.state.appversion}; Child Version: ${state.appversion})")
-    parent.LOGTRACE("Child(${app.label}) Initialized")
     sendNotificationEvent("${app.label.replace(" ","").toUpperCase()}: Settings activated")
     state.lastMode = location.mode
 //End initialize()
@@ -761,13 +760,11 @@ def updated() {
     state.installed = true
 	//LOGTRACE("Updated with settings: ${settings}")
     LOGTRACE("Updated settings (Parent Version: ${parent.state.appversion}; Child Version: ${state.appversion})")
-    parent.LOGTRACE("Child(${app.label}) Updated settings")
     unsubscribe()
     initialize()
 }
 def installed() {
 	LOGTRACE("Installed")
-	parent.LOGTRACE("Child(${app.label}) Installed")
 }
 
 def initSubscribe(){
@@ -953,10 +950,10 @@ def timeAllowed(devicetype,index){
     }
     
     //No overrides have returned True, process Default
-    if (settings.defaultStartTime == null) { 
+    if (parent?.settings?.defaultStartTime == null) { 
     	return true 
     } else {
-        if (timeOfDayIsBetween(settings.defaultStartTime, settings.defaultEndTime, now, location.timeZone)) { return true } else { return false }
+        if (timeOfDayIsBetween(parent?.settings?.defaultStartTime, parent?.settings?.defaultEndTime, now, location.timeZone)) { return true } else { return false }
     }
 }
 
@@ -976,7 +973,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -990,7 +987,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1004,7 +1001,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "motion"
@@ -1020,7 +1017,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1034,7 +1031,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1048,7 +1045,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "switch"
@@ -1064,7 +1061,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1078,7 +1075,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1092,7 +1089,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "presence"
@@ -1108,7 +1105,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1122,7 +1119,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1136,7 +1133,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "lock"
@@ -1152,7 +1149,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1166,7 +1163,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1180,7 +1177,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "contact"
@@ -1196,7 +1193,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1210,7 +1207,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1224,7 +1221,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "thermostat"
@@ -1240,7 +1237,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1254,7 +1251,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1268,7 +1265,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "acceleration"
@@ -1284,7 +1281,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1298,7 +1295,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1312,7 +1309,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "water"
@@ -1328,7 +1325,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1342,7 +1339,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1356,7 +1353,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "smoke"
@@ -1372,7 +1369,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1386,7 +1383,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1400,7 +1397,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "button"
@@ -1416,7 +1413,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1430,7 +1427,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1444,7 +1441,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "SHM"
@@ -1460,7 +1457,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 2) {
@@ -1474,7 +1471,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
             if (index == 3) {
@@ -1488,7 +1485,7 @@ def modeAllowed(devicetype,index) {
                         return false
                     }
                 } else {
-                    return (parent.settings.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
+                    return (parent?.settings?.speechModesDefault.contains(location.mode)) //True if we are in an allowed Default mode, False if not
                 }
             }
         //End: case "timeSlot"
@@ -1556,7 +1553,7 @@ def onSchedule3Event(){
 }
 
 def processScheduledEvent(index, eventtime, alloweddays){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def calendar = Calendar.getInstance()
 	calendar.setTimeZone(location.timeZone)
 	def today = calendar.get(Calendar.DAY_OF_WEEK)
@@ -1601,7 +1598,9 @@ def processScheduledEvent(index, eventtime, alloweddays){
             parent.Talk(app.label,state.TalkPhrase, state.speechDevice, resume, customevent)
         }
     }
-    if (!dayMatch) { LOGDEBUG("Time matches, but day does not match schedule; remaining silent") }
+    if (!dayMatch) { 
+    	LOGDEBUG("Time matches, but day does not match schedule; remaining silent") 
+    }
     state.TalkPhrase = null
     state.speechDevice = null
 }
@@ -1618,7 +1617,7 @@ def onMotion3Event(evt){
 }
 
 def processMotionEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onMotionEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("motion",index))) {
@@ -1676,7 +1675,6 @@ def onSwitch3Event(evt){
 def processSwitchEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onSwitchEvent): ${evt.name}, ${index}, ${evt.value}")
-    parent.LOGDEBUG("(${app.label}.onSwitchEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("switch",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1729,7 +1727,7 @@ def onPresence3Event(evt){
 }
 
 def processPresenceEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onPresenceEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("presence",index))) {
@@ -1785,7 +1783,7 @@ def onLockEvent(evt){
 }
 
 def processLockEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onLockEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("lock",index))) {
@@ -1840,7 +1838,7 @@ def onContactEvent(evt){
 }
 
 def processContactEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onContactEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("contact",index))) {
@@ -1888,7 +1886,7 @@ def onModeChangeEvent(evt){
     processModeChangeEvent(1, evt)
 }
 def processModeChangeEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onModeEvent): Last Mode: ${state.lastMode}, New Mode: ${location.mode}")
     //Are we in an allowed time period?
     if (!(timeAllowed("mode",index))) {
@@ -1948,7 +1946,7 @@ def onThermostatEvent(evt){
 }
 
 def processThermostatEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onThermostatEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("thermostat",index))) {
@@ -2016,7 +2014,7 @@ def onAcceleration3Event(evt){
 }
 
 def processAccelerationEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onAccelerationEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("acceleration",index))) {
@@ -2071,7 +2069,7 @@ def onWater3Event(evt){
 }
 
 def processWaterEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onWaterEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("water",index))) {
@@ -2126,7 +2124,7 @@ def onSmoke3Event(evt){
 }
 
 def processSmokeEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onSmokeEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("smoke",index))) {
@@ -2187,7 +2185,7 @@ def onButton3Event(evt){
 }
 
 def processButtonEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onButtonEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("button",index))) {
@@ -2233,7 +2231,7 @@ def onSHMEvent(evt){
 }
 
 def processSHMEvent(index, evt){
-	def resume = ""; resume = settings?.resumePlay; if (resume == "") { resume = true }
+	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     LOGDEBUG("(onSHMEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
     if (!(timeAllowed("SHM",index))) {
@@ -2269,13 +2267,15 @@ def processSHMEvent(index, evt){
 //END HANDLE SHM
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 def LOGDEBUG(txt){
+	if (parent?.settings?.debugmode) { parent.LOGDEBUG("[CHILD:${app.label}] ${txt}") }
     try {
-    	if (settings.debugmode) { log.debug("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${txt}") }
+    	if (parent?.settings?.debugmode) { log.debug("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${txt}")}
     } catch(ex) {
     	log.error("LOGDEBUG unable to output requested data!")
     }
 }
 def LOGTRACE(txt){
+	parent.LOGTRACE("[CHILD:${app.label}] ${txt}")
     try {
     	log.trace("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${txt}")
     } catch(ex) {
@@ -2283,6 +2283,7 @@ def LOGTRACE(txt){
     }
 }
 def LOGERROR(txt){
+	parent.LOGERROR("[CHILD:${app.label}] ${txt}")
     try {
     log.error("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ERROR: ${txt}")
     } catch(ex) {
@@ -2291,5 +2292,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "Child-2.0.a3"
+    state.appversion = "Child-2.0.a4"
 }
