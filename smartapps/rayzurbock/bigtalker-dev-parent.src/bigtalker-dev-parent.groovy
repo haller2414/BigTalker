@@ -3357,27 +3357,33 @@ def dopoll(pollSpeechDevice){
 }
 
 def LOGDEBUG(txt){
+	def msgfrom = "[PARENT] "
+	if (txt?.contains("[CHILD:")) { msgfrom = "" }
     try {
-    	if (settings.debugmode) { log.debug("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${txt}") }
+    	if (settings.debugmode) { log.debug("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${msgfrom}${txt}") }
     } catch(ex) {
     	log.error("LOGDEBUG unable to output requested data!")
     }
 }
 def LOGTRACE(txt){
+	def msgfrom = "[PARENT] "
+    if (txt?.contains("[CHILD:")) { msgfrom = "" }
     try {
-    	log.trace("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${txt}")
+    	log.trace("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${msgfrom}${txt}")
     } catch(ex) {
     	log.error("LOGTRACE unable to output requested data!")
     }
 }
 def LOGERROR(txt){
+	def msgfrom = "[PARENT] "
+    if (txt?.contains("[CHILD:")) { msgfrom = "" }
     try {
-    log.error("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ERROR: ${txt}")
+    log.error("${app.label.replace(" ","").toUpperCase()}(${state.appversion}) || ${msgfrom}ERROR: ${txt}")
     } catch(ex) {
     	log.error("LOGERROR unable to output requested data!")
     }
 }
 
 def setAppVersion(){
-    state.appversion = "Parent-2.0.a3"
+    state.appversion = "Parent-2.0.a4"
 }
