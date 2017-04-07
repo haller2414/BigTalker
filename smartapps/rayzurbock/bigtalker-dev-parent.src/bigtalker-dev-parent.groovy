@@ -1806,6 +1806,7 @@ def pageTalkNow(){
         	def myTalkNowResume = false
             paragraph ("Speak the following phrase:\nNote: must differ from the last spoken phrase\n")
             if (state.speechDeviceType == "capability.musicPlayer") {
+            	input name: "talkNowVolume", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
             	input name: "talkNowResume", type: "bool", title: "Enable audio resume", multiple: true, required: false, submitOnChange: true, defaultValue: (settings?.resumePlay == false) ? false : true
                 myTalkNowResume = settings.talkNowResume
             }
@@ -1819,7 +1820,8 @@ def pageTalkNow(){
                 	if (settings?.talkNowResume == null) {mytalkNowResume = true}  //default to true if not set.
                 }
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
-                Talk("Parent", settings.speechTalkNow, settings.talkNowSpeechDevice, myTalkNowResume, customevent)
+                def myVolume = getDesiredVolume(settings?.talkNowVolume)
+                Talk("Parent", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, customevent)
                 state.lastTalkNow = settings.speechTalkNow
             }
         }
@@ -2196,7 +2198,7 @@ def adjustWeatherPhrase(phraseIn){
     return phraseOut
 }
 
-def Talk(appname, phrase, customSpeechDevice, resume, evt){
+def Talk(appname, phrase, customSpeechDevice, volume, resume, evt){
     def currentSpeechDevices = []
     def smartAppSpeechDevice = false
     def spoke = false
@@ -2214,7 +2216,7 @@ def Talk(appname, phrase, customSpeechDevice, resume, evt){
 		state.sound = ""
 		state.ableToTalk = false
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
-			LOGTRACE("TALK(${appname}.${evt.name})|mP| >> ${phrase}")
+			LOGTRACE("TALK(${appname}.${evt.name})|mP@|${volume} >> ${phrase}")
             if (resume) { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is desired") } else { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is not desired") }
 			try {
 				state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
@@ -2265,10 +2267,10 @@ def Talk(appname, phrase, customSpeechDevice, resume, evt){
                     def minimumVolume = 50
                     if (settings?.speechMinimumVolume >= 0) {minimumVolume = settings.speechMinimumVolume}
                     if (minimumVolume > 100) {minimumVolume = 100}
-                    def desiredVolume = -1
-                    try {
-                    	desiredVolume = settings?.speechVolume
-                    } catch (ex) { LOGDEBUG("ERROR getting desired default volume"); desiredVolume = -1 }
+                    def desiredVolume = volume
+                    //try {
+                    //	desiredVolume = settings?.speechVolume
+                    //} catch (ex) { LOGDEBUG("ERROR getting desired default volume"); desiredVolume = -1 }
                     if (desiredVolume > 100) {desiredVolume = 100}
                     LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentStatus:${currentStatus}")
 					LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentTrack:${currentTrack}")
@@ -3356,6 +3358,30 @@ def dopoll(pollSpeechDevice){
     }
 }
 
+def getDesiredVolume(invol) {
+	def globalVolume = settings?.speechVolume
+    def globalMinimumVolume = settings?.speechMinimumVolume
+    def myVolume = invol
+    def finalVolume = -1
+    if (myVolume > 0) { 
+    	finalVolume = myVolume
+	} else {
+		if (globalVolume > 0) {
+			finalVolume = globalVolume
+		} else {
+            if (globalMinimumVolume > 0) {
+                finalVolume = globalMinimumVolume
+            } else {
+                finalVolume = 50 //Default if no volume parameters are set
+            }
+        }
+	}
+    if (state.speechDeviceType == "capability.musicPlayer") { 
+    	LOGDEBUG("finalVolume: ${finalVolume}")
+    }
+    return finalVolume
+}
+
 def LOGDEBUG(txt){
 	def msgfrom = "[PARENT] "
 	if (txt?.contains("[CHILD:")) { msgfrom = "" }
@@ -3385,5 +3411,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "Parent-2.0.a4"
+    state.appversion = "P-2.0.a5"
 }
