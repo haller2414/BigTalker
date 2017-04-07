@@ -2126,7 +2126,7 @@ def addPersonalityToPhrase(phrase, evt){
            	response[2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
             response[3] = "{POST}there goes the electricity bill!"
             response[4] = "{POST}the same old thing everyday."
-            response[5] = "{POST}Thanks Thomas Jefferson!"
+            response[5] = "{POST}Thanks Thomas Edison!"
             response[6] = "{PRE}Oh, Hi"
         }
     }
