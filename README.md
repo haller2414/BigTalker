@@ -8,8 +8,6 @@ Big Talker is a SmartApp for SmartThings that can make your house talk depending
 Pair it with a SmartThings compatible audio device such as Sonos, Ubi, LANnouncer, VLC Thing, or a DLNA device using the "Generic MediaRenderer" SmartApp/Device! <br />  
 See <b>More Details</b> section below for more features.<br />
 
-Version: 1.1.6-Beta1 <br />
-
 #Support the project
  This SmartApp is free. Donations to support development efforts are accepted via:
  * PayPal to: rayzur [at] rayzurbock.com
@@ -60,11 +58,14 @@ Currently supported events:
 * **Water**, Wet/Dry
 * **Smoke**, Detect/Clear/Test
 * **Button**,  Press
+* **Smart Home Monitor, Armed-Away, Armed-Home, Disarmed
 
 Each supported event supports 3 different groups so that you can alter your spoken phrases based on which group your selection of devices is configured in.
 
 Voice phrases support the following variables (to be filled in at runtime)
 
+* **%askalexa%** = Send to Ask Alexa primary queue
+* **%groupname%** = Name that you gave this event group (ie: Family Room)
 * **%devicename%** = Triggering devices display name
 * **%devicetype%** = Triggering device type; motion, switch, etc...
 * **%devicechange%** = State change that occurred; on/off, active/inactive, etc...
