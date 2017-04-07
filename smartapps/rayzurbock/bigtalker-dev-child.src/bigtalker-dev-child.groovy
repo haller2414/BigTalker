@@ -498,6 +498,7 @@ def pageHelpPhraseTokens(){
        section("The following tokens can be used in your event phrases and will be replaced as listed:"){
        	   def AvailTokens = ""
            AvailTokens += "%askalexa% = Send phrase to AskAlexa SmartApp's message queue\n\n"
+           AvailTokens += "%groupname% = Name that you gave for the event group\n\n"
            AvailTokens += "%devicename% = Triggering devices display name\n\n"
            AvailTokens += "%devicetype% = Triggering device type; motion, switch, etc\n\n"
            AvailTokens += "%devicechange% = State change that occurred; on/off, active/inactive, etc...\n\n"
@@ -1527,5 +1528,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.a5"
+    state.appversion = "C2.0.a6"
 }
