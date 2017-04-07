@@ -1821,7 +1821,7 @@ def pageTalkNow(){
                 }
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
                 def myVolume = getDesiredVolume(settings?.talkNowVolume)
-                Talk("Parent", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, customevent)
+                Talk("Talk Now", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, customevent)
                 state.lastTalkNow = settings.speechTalkNow
             }
         }
@@ -1837,6 +1837,7 @@ def pageHelpPhraseTokens(){
        section("The following tokens can be used in your event phrases and will be replaced as listed:"){
        	   def AvailTokens = ""
            AvailTokens += "%askalexa% = Send phrase to AskAlexa SmartApp's message queue\n\n"
+           AvailTokens += "%groupname% = Name that you gave for the event group\n\n"
            AvailTokens += "%devicename% = Triggering devices display name\n\n"
            AvailTokens += "%devicetype% = Triggering device type; motion, switch, etc\n\n"
            AvailTokens += "%devicechange% = State change that occurred; on/off, active/inactive, etc...\n\n"
@@ -1989,9 +1990,12 @@ def initialize() {
 //End initialize()
 }
 
-def processPhraseVariables(phrase, evt){
+def processPhraseVariables(appname, phrase, evt){
     def zipCode = location.zipCode
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
+    if (phrase.toLowerCase().contains("%groupname%")) {
+    	phrase = phrase.toLowerCase().replace('%groupname%', appname)
+    }
     if (phrase.toLowerCase().contains("%devicename%")) {
     	try {
         	phrase = phrase.toLowerCase().replace('%devicename%', evt.displayName)  //User given name of the device triggering the event
@@ -2204,7 +2208,7 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, evt){
     def spoke = false
     if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
     if (!(phrase == null) && !(phrase == "")) {
-    	phrase = processPhraseVariables(phrase, evt)
+    	phrase = processPhraseVariables(appname, phrase, evt)
         if (settings?.personalityMode == true && (!(evt.value == "TalkNow"))) { phrase = addPersonalityToPhrase(phrase, evt) }
     }
     if (phrase == null || phrase == "") {
@@ -3411,5 +3415,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P-2.0.a5"
+    state.appversion = "P-2.0.a6"
 }
