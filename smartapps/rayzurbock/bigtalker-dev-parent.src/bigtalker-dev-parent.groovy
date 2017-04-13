@@ -1821,7 +1821,8 @@ def pageTalkNow(){
                 }
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
                 def myVolume = getDesiredVolume(settings?.talkNowVolume)
-                Talk("Talk Now", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, customevent)
+                def personality = false
+                Talk("Talk Now", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, personality, customevent)
                 state.lastTalkNow = settings.speechTalkNow
             }
         }
@@ -1918,7 +1919,7 @@ def pageConfigureDefaults(){
             input "defaultEndTime", "time", title: "Don't talk after: ", required: (!(settings.defaultStartTime == null)), submitOnChange: true
         }
         section(){
-            input "personalityMode", "bool", title: "Enable personality?", required: true, defaultValue: false
+            input "personalityMode", "bool", title: "Allow Personality?", required: true, defaultValue: false
             input "debugmode", "bool", title: "Enable debug logging", required: true, defaultValue: false
         }
     }
@@ -2125,24 +2126,41 @@ def addPersonalityToPhrase(phrase, evt){
     //SWITCHES BEGIN
     if (evt.value == "on") {
     	if (phrase.contains("light")){
-        	options = 6
+        	options = 8
   			response[1] = "{POST}please don't forget to turn the light off"
            	response[2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
-            response[3] = "{POST}there goes the electricity bill!"
-            response[4] = "{POST}the same old thing everyday."
-            response[5] = "{POST}Thanks Thomas Edison!"
-            response[6] = "{PRE}Oh, Hi"
+            response[3] = "{POST}Thanks Thomas Edison!"
+            response[4] = "{POST}Wow, this is bright!"
+            response[5] = "{POST}Where are my sunglasses."
+            response[6] = "{POST}there goes the electricity bill!"
+            response[7] = "{POST}the same old thing everyday."
+            response[8] = "{PRE}Oh, Hi"
+        } else {
+        	//Something turned on, but it wasn't a light
+        	options = 3
+            response[1] = "{POST}there goes the electricity bill!"
+            response[2] = "{POST}the same old thing everyday."
+            response[3] = "{PRE}Oh, Hi"
         }
     }
     if (evt.value == "off") {
     	if (phrase.contains("light")){
-        	options = 6
+        	options = 8
            	response[1] = "{POST}It's about time!"
             response[2] = "{POST}time to save some money!"
             response[3] = "{POST}wow, it's dark"
             response[4] = "{POST}going green are we?"
             response[5] = "{POST}I'll still be here, in the dark."
-            response[6] = "{PRE}Oh, Hi"
+            response[6] = "{POST}Hey! You know I am afraid of the dark."
+            response[7] = "{POST}Please don't leave me alone in the dark."
+            response[8] = "{PRE}Oh, Hi"
+        } else {
+        	//Something turned off, but it wasn't a light
+        	options = 4
+        	response[1] = "{POST}It's about time!"
+            response[2] = "{POST}time to save some money!"
+            response[3] = "{POST}going green are we?"
+            response[4] = "{PRE}Oh, Hi"
         }
     }
     //SWITCHES END
@@ -2202,14 +2220,14 @@ def adjustWeatherPhrase(phraseIn){
     return phraseOut
 }
 
-def Talk(appname, phrase, customSpeechDevice, volume, resume, evt){
+def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
     def currentSpeechDevices = []
     def smartAppSpeechDevice = false
     def spoke = false
     if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
     if (!(phrase == null) && !(phrase == "")) {
     	phrase = processPhraseVariables(appname, phrase, evt)
-        if (settings?.personalityMode == true && (!(evt.value == "TalkNow"))) { phrase = addPersonalityToPhrase(phrase, evt) }
+        if (personality) { phrase = addPersonalityToPhrase(phrase, evt) }
     }
     if (phrase == null || phrase == "") {
     	LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
@@ -3415,5 +3433,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P-2.0.a6"
+    state.appversion = "P-2.0.a7"
 }
