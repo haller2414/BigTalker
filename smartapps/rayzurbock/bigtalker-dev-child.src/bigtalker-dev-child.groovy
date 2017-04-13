@@ -32,67 +32,67 @@ def pageConfigureEvents(){
         section("Talk on events:") {
         	label(name: "labelRequired", title: "Event Group Name:", defaultValue: "Change this", required: true, multiple: false)
             if (settings.timeSlotTime1 || settings.timeSlotTime2 || settings.timeSlotTime3) {
-                href "pageConfigTime", title: "Time", description: "Tap to modify"
+                href "pageConfigTime", title: "Time", description: "Tap to modify", state:"complete"
             } else {
                 href "pageConfigTime", title: "Time", description: "Tap to configure"
             }
             if (settings.motionDeviceGroup1 || settings.motionDeviceGroup2 || settings.motionDeviceGroup3) {
-                href "pageConfigMotion", title:"Motion", description:"Tap to modify"
+                href "pageConfigMotion", title:"Motion", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigMotion", title:"Motion", description:"Tap to configure"
             }
             if (settings.switchDeviceGroup1 || settings.switchDeviceGroup2 || settings.switchDeviceGroup3) {
-                href "pageConfigSwitch", title:"Switch", description:"Tap to modify"
+                href "pageConfigSwitch", title:"Switch", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigSwitch", title:"Switch", description:"Tap to configure"
             }
             if (settings.presDeviceGroup1 || settings.presDeviceGroup2 || settings.presDeviceGroup3) {
-                href "pageConfigPresence", title:"Presence", description:"Tap to modify"
+                href "pageConfigPresence", title:"Presence", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigPresence", title:"Presence", description:"Tap to configure"
             }
             if (settings.lockDeviceGroup1 || settings.lockDeviceGroup2 || settings.lockDeviceGroup3) {
-                href "pageConfigLock", title:"Lock", description:"Tap to modify"
+                href "pageConfigLock", title:"Lock", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigLock", title:"Lock", description:"Tap to configure"
             }
             if (settings.contactDeviceGroup1 || settings.contactDeviceGroup2 || settings.contactDeviceGroup3) {
-                href "pageConfigContact", title:"Contact", description:"Tap to modify"
+                href "pageConfigContact", title:"Contact", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigContact", title:"Contact", description:"Tap to configure"
             }
             if (settings.modePhraseGroup1 || settings.modePhraseGroup2 || settings.modePhraseGroup3) {
-                href "pageConfigMode", title:"Mode", description:"Tap to modify"
+                href "pageConfigMode", title:"Mode", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigMode", title:"Mode", description:"Tap to configure"
             }
             if (settings.thermostatDeviceGroup1 || settings.thermostatDeviceGroup2 || settings.thermostatDeviceGroup3) {
-                href "pageConfigThermostat", title:"Thermostat", description:"Tap to modify"
+                href "pageConfigThermostat", title:"Thermostat", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigThermostat", title:"Thermostat", description:"Tap to configure"
             }
             if (settings.accelerationDeviceGroup1 || settings.accelerationDeviceGroup2 || settings.accelerationDeviceGroup3) {
-                href "pageConfigAcceleration", title: "Acceleration", description:"Tap to modify"
+                href "pageConfigAcceleration", title: "Acceleration", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigAcceleration", title: "Acceleration", description:"Tap to configure"
             }
             if (settings.waterDeviceGroup1 || settings.waterDeviceGroup2 || settings.waterDeviceGroup3) {
-                href "pageConfigWater", title: "Water", description:"Tap to modify"
+                href "pageConfigWater", title: "Water", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigWater", title: "Water", description:"Tap to configure"
             }
             if (settings.smokeDeviceGroup1 || settings.smokeDeviceGroup2 || settings.smokeDeviceGroup3) {
-                href "pageConfigSmoke", title: "Smoke", description:"Tap to modify"
+                href "pageConfigSmoke", title: "Smoke", description:"Tap to modify", state:"complete"
             } else { 
                 href "pageConfigSmoke", title: "Smoke", description:"Tap to configure"
             }
             if (settings.buttonDeviceGroup1 || settings.buttonDeviceGroup2 || settings.buttonDeviceGroup3) {
-                href "pageConfigButton", title: "Button", description:"Tap to configure"
+                href "pageConfigButton", title: "Button", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigButton", title: "Button", description:"Tap to configure"
             }
-            if (settings.SHMDeviceGroup1) {
-                href "pageConfigSHM", title: "Smart Home Monitor", description:"Tap to configure"
+            if (settings.SHMTalkOnHome || settings.SHMTalkOnAway || settings.SHMTalkOnDisarm) {
+                href "pageConfigSHM", title: "Smart Home Monitor", description:"Tap to modify", state:"complete"
             } else {
                 href "pageConfigSHM", title: "Smart Home Monitor", description:"Tap to configure"
             }
@@ -112,6 +112,7 @@ def pageConfigMotion(){
             input name: "motionDeviceGroup1", type: "capability.motionSensor", title: "Motion Sensor(s)", required: false, multiple: true
             input name: "motionTalkActive1", type: "text", title: "Say this on motion active:", required: false, defaultValue: defaultSpeechActive1
             input name: "motionTalkInactive1", type: "text", title: "Say this on motion inactive:", required: false, defaultValue: defaultSpeechInactive1
+            input name: "motionPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "motionSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "motionVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -140,6 +141,7 @@ def pageConfigSwitch(){
             input name: "switchDeviceGroup1", type: "capability.switch", title: "Switch(es)", required: false, multiple: true
             input name: "switchTalkOn1", type: "text", title: "Say this when switch is turned ON:", required: false, defaultValue: defaultSpeechOn1
             input name: "switchTalkOff1", type: "text", title: "Say this when switch is turned OFF:", required: false, defaultValue: defaultSpeechOff1
+            input name: "switchPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "switchSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "switchVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -168,6 +170,7 @@ def pageConfigPresence(){
             input name: "presDeviceGroup1", type: "capability.presenceSensor", title: "Presence Sensor(s)", required: false, multiple: true
             input name: "presTalkOnArrive1", type: "text", title: "Say this when someone arrives:", required: false, defaultValue: defaultSpeechArrive1
             input name: "presTalkOnLeave1", type: "text", title: "Say this when someone leaves:", required: false, defaultValue: defaultSpeechLeave1
+            input name: "presPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "presSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "presVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -196,6 +199,7 @@ def pageConfigLock(){
             input name: "lockDeviceGroup1", type: "capability.lock", title: "Lock(s)", required: false, multiple: true
             input name: "lockTalkOnUnlock1", type: "text", title: "Say this when unlocked:", required: false, defaultValue: defaultSpeechUnlock1
             input name: "lockTalkOnLock1", type: "text", title: "Say this when locked:", required: false, defaultValue: defaultSpeechLock1
+            input name: "lockPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "lockSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "lockVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -224,6 +228,7 @@ def pageConfigContact(){
             input name: "contactDeviceGroup1", type: "capability.contactSensor", title: "Contact sensor(s)", required: false, multiple: true
             input name: "contactTalkOnOpen1", type: "text", title: "Say this when opened:", required: false, defaultValue: defaultSpeechOpen1
             input name: "contactTalkOnClose1", type: "text", title: "Say this when closed:", required: false, defaultValue: defaultSpeechClose1
+            input name: "contactPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "contactSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "contactVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -255,6 +260,7 @@ def pageConfigMode(){
             input name: "modePhraseGroup1", type:"mode", title:"When mode changes to: ", required:false, multiple:true, submitOnChange:false
             input name: "modeExcludePhraseGroup1", type: "mode", title: "But not when changed from (optional): ", required: false, multiple: true
             input name: "TalkOnModeChange1", type: "text", title: "Say this when home mode is changed", required: false, defaultValue: defaultSpeechMode1
+            input name: "modePersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "modePhraseSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "modePhraseVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -288,6 +294,7 @@ def pageConfigThermostat(){
             input name: "thermostatTalkOnHeating1", type: "text", title: "Say this on change to heating:", required: false, defaultValue: defaultSpeechHeating1
             input name: "thermostatTalkOnCooling1", type: "text", title: "Say this on change to cooling:", required: false, defaultValue: defaultSpeechCooling1
             input name: "thermostatTalkOnFan1", type: "text", title: "Say this on change to fan only:", required: false, defaultValue: defaultSpeechFan1
+            input name: "thermostatPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "thermostatSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "thermostatVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -316,6 +323,7 @@ def pageConfigAcceleration(){
             input name: "accelerationDeviceGroup1", type: "capability.accelerationSensor", title: "Acceleration sensor(s)", required: false, multiple: true
             input name: "accelerationTalkOnActive1", type: "text", title: "Say this when activated:", required: false, defaultValue: defaultSpeechActive1
             input name: "accelerationTalkOnInactive1", type: "text", title: "Say this when inactivated:", required: false, defaultValue: defaultSpeechInactive1
+            input name: "accelerationPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "accelerationSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "accelerationVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -344,6 +352,7 @@ def pageConfigWater(){
             input name: "waterDeviceGroup1", type: "capability.waterSensor", title: "Water sensor(s)", required: false, multiple: true
             input name: "waterTalkOnWet1", type: "text", title: "Say this when wet:", required: false, defaultValue: defaultSpeechWet1
             input name: "waterTalkOnDry1", type: "text", title: "Say this when dry:", required: false, defaultValue: defaultSpeechDry1
+            input name: "waterPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "waterSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "waterVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -375,6 +384,7 @@ def pageConfigSmoke(){
             input name: "smokeTalkOnDetect1", type: "text", title: "Say this when detected:", required: false, defaultValue: defaultSpeechDetect1
             input name: "smokeTalkOnClear1", type: "text", title: "Say this when cleared:", required: false, defaultValue: defaultSpeechClear1
             input name: "smokeTalkOnTest1", type: "text", title: "Say this when tested:", required: false, defaultValue: defaultSpeechTest1
+            input name: "smokePersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "smokeSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "smokeVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -403,6 +413,7 @@ def pageConfigButton(){
             input name: "buttonDeviceGroup1", type: "capability.button", title: "Button(s)", required: false, multiple: true
             input name: "buttonTalkOnPress1", type: "text", title: "Say this when pressed:", required: false, defaultValue: defaultSpeechButton1
             input name: "buttonTalkOnHold1", type: "text", title: "Say this when held:", required: false, defaultValue: defaultSpeechButtonHold1
+            input name: "buttonPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "buttonSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "buttonVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -421,9 +432,12 @@ def pageConfigButton(){
 
 def pageConfigSHM(){
     dynamicPage(name: "pageConfigSHM", title: "Configure talk on Smart Home Monitor status change", install: false, uninstall: false) {
+    	section(){
+        	input name: "SHMPersonality", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
+        }
         section("Smart Home Monitor - Armed, Away"){
             def defaultSpeechSHMAway = ""
-            if (settings.SHMTalkOnAway == null) {
+            if ((!SHMTalkOnAway) && (!SHMTalkOnHome) && (!SHMTalkOnDisarm)) {
                 defaultSpeechSHMAway = "Smart Home Monitor is now Armed in Away mode"
             }
             input name: "SHMTalkOnAway", type: "text", title: "Say this when Armed, Away:", required: false, defaultValue: defaultSpeechSHMAway
@@ -438,7 +452,7 @@ def pageConfigSHM(){
         }
         section("Smart Home Monitor - Armed, Home"){
         	def defaultSpeechSHMHome = ""
-            if (settings.SHMTalkOnHome == null) {
+            if ((!SHMTalkOnAway) && (!SHMTalkOnHome) && (!SHMTalkOnDisarm)) {
                 defaultSpeechSHMHome = "Smart Home Monitor is now Armed in Home mode"
             }
             input name: "SHMTalkOnHome", type: "text", title: "Say this when Armed, Home:", required: false, defaultValue: defaultSpeechSHMHome
@@ -453,7 +467,7 @@ def pageConfigSHM(){
         }
         section("Smart Home Monitor - Disarmed"){
         	def defaultSpeechSHMDisarm = ""
-            if (settings.SHMTalkOnDisarm == null) {
+            if ((!SHMTalkOnAway) && (!SHMTalkOnHome) && (!SHMTalkOnDisarm)) {
                 defaultSpeechSHMDisarm = "Smart Home Monitor is now Disarmed"
             }
             input name: "SHMTalkOnDisarm", type: "text", title: "Say this when Disarmed:", required: false, defaultValue: defaultSpeechSHMDisarm
@@ -479,6 +493,7 @@ def pageConfigTime(){
             input name: "timeSlotDays1", type: "enum", title: "Which day(s)", required: false, options: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], multiple: true
             input name: "timeSlotTime1", type: "time", title: "Time of day", required: false
             input name: "timeSlotOnTime1", type: "text", title: "Say on schedule:", required: false
+            input name: "timePersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
             input name: "timeSlotSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "timeSlotVolume1", type: "number", title: "Set volume to (overrides default):", required: false
@@ -935,6 +950,7 @@ def onSchedule1Event(){
 
 def processScheduledEvent(index, eventtime, alloweddays){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     def calendar = Calendar.getInstance()
 	calendar.setTimeZone(location.timeZone)
@@ -967,9 +983,15 @@ def processScheduledEvent(index, eventtime, alloweddays){
 				}
                 if (resume == null) { resume = true }
 			} else { resume = false }
+            if (settings?.timeSlotPersonality1 == "Yes") {
+            	personality = true
+            }
+            if (settings?.timeSlotPersonality1 == "No") {
+            	personality = false
+            }
             if (index == 1) { state.TalkPhrase = settings.timeSlotOnTime1; state.speechDevice = timeSlotSpeechDevice1; myVolume = getDesiredVolume(settings.timeSlotVolume1)}
             def customevent = [displayName: 'BigTalker:OnSchedule', name: 'OnSchedule', value: "${todayStr}@${timeNow}"]
-            parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, customevent)
+            parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, personality, customevent)
         }
     }
     if (!dayMatch) { 
@@ -986,6 +1008,7 @@ def onMotion1Event(evt){
 
 def processMotionEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onMotionEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1006,13 +1029,19 @@ def processMotionEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.motionPersonality1 == "Yes") {
+            	personality = true
+    }
+    if (settings?.motionPersonality1 == "No") {
+    	personality = false
+    }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkActive1; state.speechDevice = motionSpeechDevice1; myVolume = getDesiredVolume(settings.motionVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "inactive") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkInactive1; state.speechDevice = motionSpeechDevice1; myVolume = getDesiredVolume(settings.motionVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1025,6 +1054,7 @@ def onSwitch1Event(evt){
 
 def processSwitchEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onSwitchEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1045,13 +1075,19 @@ def processSwitchEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.switchPersonality1 == "Yes") {
+            	personality = true
+    }
+    if (settings?.switchPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "on") {
         if (index == 1) { state.TalkPhrase = settings.switchTalkOn1; state.speechDevice = switchSpeechDevice1; myVolume = getDesiredVolume(settings.switchVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "off") {
         if (index == 1) { state.TalkPhrase = settings.switchTalkOff1; state.speechDevice = switchSpeechDevice1; myVolume = getDesiredVolume(settings.switchVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1064,6 +1100,7 @@ def onPresence1Event(evt){
 
 def processPresenceEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onPresenceEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1084,13 +1121,19 @@ def processPresenceEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.presPersonality1 == "Yes") {
+    	personality = true
+    }
+    if (settings?.presPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "present") {
         if (index == 1) { state.TalkPhrase = settings.presTalkOnArrive1; state.speechDevice = presSpeechDevice1; myVolume = getDesiredVolume(settings.presVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "not present") {
         if (index == 1) { state.TalkPhrase = settings.presTalkOnLeave1; state.speechDevice = presSpeechDevice1; myVolume = getDesiredVolume(settings.presVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1105,6 +1148,7 @@ def onLock1Event(evt){
 
 def processLockEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onLockEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1125,13 +1169,19 @@ def processLockEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.lockPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.lockPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "locked") {
         if (index == 1) { state.TalkPhrase = settings.lockTalkOnLock1; state.speechDevice = lockSpeechDevice1; myVolume = getDesiredVolume(settings.lockVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "unlocked") {
         if (index == 1) { state.TalkPhrase = settings.lockTalkOnUnlock1; state.speechDevice = lockSpeechDevice1; myVolume = getDesiredVolume(settings.lockVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1145,6 +1195,7 @@ def onContact1Event(evt){
 
 def processContactEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onContactEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1165,13 +1216,19 @@ def processContactEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.contactPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.contactPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "open") {
         if (index == 1) { state.TalkPhrase = settings.contactTalkOnOpen1; state.speechDevice = contactSpeechDevice1; myVolume = getDesiredVolume(settings.contactVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "closed") {
         if (index == 1) { state.TalkPhrase = settings.contactTalkOnClose1; state.speechDevice = contactSpeechDevice1; myVolume = getDesiredVolume(settings.contactVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1184,6 +1241,7 @@ def onModeChangeEvent(evt){
 }
 def processModeChangeEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onModeEvent): Last Mode: ${state.lastMode}, New Mode: ${location.mode}")
     //Are we in an allowed time period?
@@ -1198,6 +1256,12 @@ def processModeChangeEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.modePersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.modePersonality1 == "No") {
+     	personality = false
+    }
     if (settings.modePhraseGroup1.contains(location.mode)){
         if (!settings.modeExcludePhraseGroup1 == null){
             //settings.modeExcluePhraseGroup1 is not empty
@@ -1206,7 +1270,7 @@ def processModeChangeEvent(index, evt){
                 state.TalkPhrase = null
                 state.speechDevice = null
                 state.TalkPhrase = settings.TalkOnModeChange1; state.speechDevice = modePhraseSpeechDevice1; myVolume = getDesiredVolume(settings.modePhraseVolume1)
-                if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+                if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
                 state.TalkPhrase = null
                 state.speechDevice = null
             } else {
@@ -1217,7 +1281,7 @@ def processModeChangeEvent(index, evt){
             state.TalkPhrase = null
             state.speechDevice = null
             state.TalkPhrase = settings.TalkOnModeChange1; state.speechDevice = modePhraseSpeechDevice1; myVolume = getDesiredVolume(settings.modePhraseVolume1)
-            if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+            if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
             state.TalkPhrase = null
             state.speechDevice = null
         }
@@ -1233,6 +1297,7 @@ def onThermostat1Event(evt){
 
 def processThermostatEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onThermostatEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1253,21 +1318,27 @@ def processThermostatEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.thermostatPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.thermostatPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "idle") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnIdle1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "heating") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnHeating1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "cooling") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnCooling1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "fan only") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnFan1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
 
     state.TalkPhrase = null
@@ -1282,6 +1353,7 @@ def onAcceleration1Event(evt){
 
 def processAccelerationEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onAccelerationEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1302,13 +1374,19 @@ def processAccelerationEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.accelerationPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.accelerationPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.accelerationTalkOnActive1; state.speechDevice = accelerationSpeechDevice1; myVolume = getDesiredVolume(settings.accelerationVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "inactive") {
         if (index == 1) { state.TalkPhrase = settings.accelerationTalkOnInactive1; state.speechDevice = accelerationSpeechDevice1; myVolume = getDesiredVolume(settings.accelerationVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1322,6 +1400,7 @@ def onWater1Event(evt){
 
 def processWaterEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onWaterEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1342,13 +1421,19 @@ def processWaterEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.waterPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.waterPersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "wet") {
         if (index == 1) { state.TalkPhrase = settings.waterTalkOnWet1; state.speechDevice = waterSpeechDevice1; myVolume = getDesiredVolume(settings.waterVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "dry") {
         if (index == 1) { state.TalkPhrase = settings.waterTalkOnDry1; state.speechDevice = waterSpeechDevice1; myVolume = getDesiredVolume(settings.waterVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1362,6 +1447,7 @@ def onSmoke1Event(evt){
 
 def processSmokeEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onSmokeEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1382,17 +1468,23 @@ def processSmokeEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.smokePersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.smokePersonality1 == "No") {
+     	personality = false
+    }
     if (evt.value == "detected") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnDetect1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "clear") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnClear1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "tested") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnTest1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1406,6 +1498,7 @@ def onButton1Event(evt){
 
 def processButtonEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onButtonEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1426,9 +1519,15 @@ def processButtonEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.buttonPersonality1 == "Yes") {
+       	personality = true
+    }
+    if (settings?.buttonPersonality1 == "No") {
+     	personality = false
+    }
     if (index == 1 && evt.value == "pushed") { state.TalkPhrase = settings.buttonTalkOnPress1; state.speechDevice = buttonSpeechDevice1; myVolume = getDesiredVolume(settings.buttonVolume1)}
     if (index == 1 && evt.value == "held") { state.TalkPhrase = settings.buttonTalkOnHold1; state.speechDevice = buttonSpeechDevice1; myVolume = getDesiredVolume(settings.buttonVolume1)}
-    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     state.TalkPhrase = null
     state.speechDevice = null
 }
@@ -1443,6 +1542,7 @@ def onSHMEvent(evt){
 
 def processSHMEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
+    def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
     LOGDEBUG("(onSHMEvent): ${evt.name}, ${index}, ${evt.value}")
     //Are we in an allowed time period?
@@ -1469,10 +1569,16 @@ def processSHMEvent(index, evt){
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
+    if (settings?.SHMPersonality == "Yes") {
+       	personality = true
+    }
+    if (settings?.SHMPersonality == "No") {
+     	personality = false
+    }
     if (index == 1) {state.TalkPhrase = settings.SHMTalkOnAway; state.speechDevice = SHMSpeechDeviceAway; myVolume = getDesiredVolume(settings.SHMVolumeAway)}
     if (index == 2) {state.TalkPhrase = settings.SHMTalkOnHome; state.speechDevice = SHMSpeechDeviceHome; myVolume = getDesiredVolume(settings.SHMVolumeHome)}
     if (index == 3) {state.TalkPhrase = settings.SHMTalkOnDisarm; state.speechDevice = SHMSpeechDeviceDisarm; myVolume = getDesiredVolume(settings.SHMVolumeDisarm)}
-    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     state.TalkPhrase = null
     state.speechDevice = null
 }
@@ -1528,5 +1634,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.a6"
+    state.appversion = "C2.0.a7"
 }
