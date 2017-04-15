@@ -2221,19 +2221,25 @@ def adjustWeatherPhrase(phraseIn){
 }
 
 def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
-    def currentSpeechDevices = []
-    def smartAppSpeechDevice = false
-    def spoke = false
-    if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
-    if (!(phrase == null) && !(phrase == "")) {
-    	phrase = processPhraseVariables(appname, phrase, evt)
-        if (personality) { phrase = addPersonalityToPhrase(phrase, evt) }
+	def myDelay = 100
+    if (state.speechDeviceType == "capability.musicPlayer") { 
+    	myDelay = TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, evt) 
+        state.lastTalkTime = now()
     }
-    if (phrase == null || phrase == "") {
-    	LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
+	def currentSpeechDevices = []
+   	def smartAppSpeechDevice = false
+   	def spoke = false
+    LOGDEBUG ("TALK(myDelay=${myDelay})")
+   	if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
+   	if (!(phrase == null) && !(phrase == "")) {
+		phrase = processPhraseVariables(appname, phrase, evt)
+	    if (personality) { phrase = addPersonalityToPhrase(phrase, evt) }
+	}
+	if (phrase == null || phrase == "") {
+   		LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
     	sendNotification(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
-    }
-    if (resume == null) { resume = true }
+	}
+	if (resume == null) { resume = true }
 	if ((state.speechDeviceType == "capability.musicPlayer") && (!( phrase==null ) && !(phrase==""))){
 		state.sound = ""
 		state.ableToTalk = false
@@ -2256,11 +2262,11 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 					sendNotification("BigTalker couldn't announce: ${phrase}")
 				} //try again before final error(ableToTalk)
 			} //try (ableToTalk)
-            if ((state?.allowScheduledPoll == true || state?.allowScheduledPoll == null) && (resume)) {
+   	        if ((state?.allowScheduledPoll == true || state?.allowScheduledPoll == null) && (resume)) {
 				unschedule("poll")
 				LOGDEBUG("TALK(${appname}.${evt.name})|mP| Delaying polling for 120 seconds")
 				myRunIn(120, poll)
-            }
+           	}
 			if (state.ableToTalk){
 				state.sound.duration = (state.sound.duration.toInteger() + 5).toString()  //Try to prevent cutting out, add seconds to the duration
 				if (!(customSpeechDevice == null)) {
@@ -2275,38 +2281,38 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 				currentSpeechDevices.each(){
 					LOGDEBUG("TALK(${appname}.${evt.name})|mP| attrs=${attrs}")
 					def currentStatus = ""
-                    try {
+                   	try {
                     	currentStatus = it?.latestValue("status")
-                    } catch (ex) { LOGDEBUG("ERROR getting device currentStatus") }
+   	                } catch (ex) { LOGDEBUG("ERROR getting device currentStatus") }
 					def currentTrack = ""
-                    try {
-                    	currentTrack = it?.latestState("trackData")?.jsonValue
-                    } catch (ex) { LOGDEBUG("ERROR getting device currentTrack") }
+           	        try {
+              	    	currentTrack = it?.latestState("trackData")?.jsonValue
+                   	} catch (ex) { LOGDEBUG("ERROR getting device currentTrack") }
 					def currentVolume = 0 
-                    try {
-                    	currentVolume = it?.latestState("level")?.integerValue ? it.latestState("level")?.integerValue : 0
-                    } catch (ex) { LOGDEBUG("ERROR getting device currentVolume") }
-                    def minimumVolume = 50
-                    if (settings?.speechMinimumVolume >= 0) {minimumVolume = settings.speechMinimumVolume}
-                    if (minimumVolume > 100) {minimumVolume = 100}
-                    def desiredVolume = volume
-                    //try {
-                    //	desiredVolume = settings?.speechVolume
-                    //} catch (ex) { LOGDEBUG("ERROR getting desired default volume"); desiredVolume = -1 }
-                    if (desiredVolume > 100) {desiredVolume = 100}
-                    LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentStatus:${currentStatus}")
+                   	try {
+                   		currentVolume = it?.latestState("level")?.integerValue ? it.latestState("level")?.integerValue : 0
+                   	} catch (ex) { LOGDEBUG("ERROR getting device currentVolume") }
+                   	def minimumVolume = 50
+                   	if (settings?.speechMinimumVolume >= 0) {minimumVolume = settings.speechMinimumVolume}
+                   	if (minimumVolume > 100) {minimumVolume = 100}
+                   	def desiredVolume = volume
+                   	//try {
+                   	//	desiredVolume = settings?.speechVolume
+                   	//} catch (ex) { LOGDEBUG("ERROR getting desired default volume"); desiredVolume = -1 }
+                   	if (desiredVolume > 100) {desiredVolume = 100}
+                   	LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentStatus:${currentStatus}")
 					LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentTrack:${currentTrack}")
 					LOGDEBUG("TALK(${appname}.${evt.name})|mP| currentVolume:${currentVolume}")
 					LOGDEBUG("TALK(${appname}.${evt.name})|mP| Sound: ${state.sound.uri} , ${state.sound.duration}")
 					if (desiredVolume > -1){ 
-                    	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Desired Volume: ${desiredVolume}")
-                    } else {
+                   		LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Desired Volume: ${desiredVolume}")
+                   	} else {
 	                    if (!(currentVolume >= minimumVolume)) {
-    	                	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Minimum Volume: ${minimumVolume}; adjusting.")
-        	            } else {
-            	        	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Minimum Volume: ${minimumVolume}; acceptable.")
-                	    }
-                    }
+   		                	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Minimum Volume: ${minimumVolume}; adjusting.")
+       		            } else {
+           		        	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Volume: ${currentVolume}, Minimum Volume: ${minimumVolume}; acceptable.")
+               		    }
+                   	}
 					if (!(currentTrack == null)){
 						//currentTrack has data
 						if (!(currentTrack?.status == null)) { LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | Current Status: ${currentStatus}, CurrentTrack: ${currentTrack}, CurrentTrack.Status: ${currentTrack.status}.") }
@@ -2316,25 +2322,25 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
                             	LOGTRACE ("Sending playTrackandResume() 1")
 								LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT<>null | cS/cT=playing | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${desiredVolume}")
 								if (desiredVolume > -1) { 
-									if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
-									if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume)}
+									if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay])}
+									if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 									spoke = true
 								} else { 
-									if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-									if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume) }
+									if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+									if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 									spoke = true
 								} //if (desiredVolume)
 							} else {
 								//resume is not desired
 								LOGTRACE ("Sending playTrackandRestore() 2 - ${it?.displayName} - cVol = ${currentVolume}")
-                                LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT<>null | cS/cT=playing | NoResume! | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
+                               	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT<>null | cS/cT=playing | NoResume! | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 								if (desiredVolume > -1) { 
-									if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-									if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+									if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+									if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 									spoke = true
 								} else { 
-									if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-									if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+									if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+									if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 									spoke = true
 								} // if (desiredVolume)
 							} // if (resume)	
@@ -2343,14 +2349,14 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 								LOGDEBUG "TALK(${appname}.${evt.name})|mP| ${it?.displayName} | Discrepency in CS/CT, going with CT! | CS= ${currentStatus} CT=${currentTrack.status}"
 							}
 							LOGTRACE ("Sending playTrackandRestore() 3 - to ${it?.displayName} - cVol = ${currentVolume}")
-                            LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT<>null | cS/cT<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
+                           	LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT<>null | cS/cT<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 							if (desiredVolume > -1) { 
-								if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-								if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+								if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+								if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 								spoke = true
 							} else { 
-								if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-								if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+								if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+								if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 								spoke = true
 							}// if (desiredVolume)
 						}// if ((currentStatus == 'playing' || currentTrack?.status == 'playing') && (!((currentTrack?.status == 'stopped') || (currentTrack?.status == 'paused'))))
@@ -2362,27 +2368,27 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 								//VLCThing?
 								if (resume) {
 									LOGTRACE ("Sending playTrackandResume() 4")
-                                    LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=disconnected | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${desiredVolume}")
+                   	                LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=disconnected | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${desiredVolume}")
 									if (desiredVolume > -1) { 
-										if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
-										if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume)}
+										if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay])}
+										if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 										spoke = true
 									} else { 
-										if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-										if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume) }
+										if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+										if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 										spoke = true
 									}
 								} else {
 									//resume is not desired
-                                    LOGTRACE ("Sending playTrackandRestore() 5")
+                       	            LOGTRACE ("Sending playTrackandRestore() 5")
 									LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=disconnected | No Resume! | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 									if (desiredVolume > -1) { 
-										if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-										if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+										if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+										if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 										spoke = true
 									} else { 
-										if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-										if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+										if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+										if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 										spoke = true
 									}// if (desiredVolume)
 								}// if (resume)
@@ -2392,25 +2398,25 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
                                     	LOGTRACE ("Sending playTrackandResume() 6")
 										LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=playing | Sending playTrackAndResume() | CVol=${currentVolume} | SVol=${desiredVolume}")
 										if (desiredVolume > -1) { 
-											if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration)}
-											if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume)}
+											if (desiredVolume == currentVolume){it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay])}
+											if (!(desiredVolume == currentVolume)){it.playTrackAndResume(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 											spoke = true
 										} else { 
-											if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration) }
-											if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume) }
+											if (currentVolume >= minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+											if (currentVolume < minimumVolume) { it.playTrackAndResume(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 											spoke = true
 										}// if (desiredVolume)
 									} else {
 										//resume not desired
 										LOGTRACE ("Sending playTrackandRestore() 7")
-                                        LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=playing | No Resume! | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
+           	                            LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS=playing | No Resume! | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 										if (desiredVolume > -1) { 
-											if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-											if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+											if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+											if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 											spoke = true
 										} else { 
-											if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-											if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+											if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+											if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 											spoke = true
 										}// if (desiredVolume)
 									}// if (resume)
@@ -2419,12 +2425,12 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
                                     LOGTRACE ("Sending playTrackandRestore() 8")
 									LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it?.displayName} | cT=null | cS<>playing | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 									if (desiredVolume > -1) { 
-										if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-										if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+										if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+										if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 										spoke = true
 									} else { 
-										if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-										if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+										if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+										if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 										spoke = true
 									}// if (desiredVolume)
 								}// if (currentStatus == "playing")
@@ -2432,14 +2438,14 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 						} else {
 							//currentTrack and currentStatus are both null
 							LOGTRACE ("Sending playTrackandRestore() 9")
-                            LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | (3) cT=null | cS=null | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
+       	                    LOGTRACE("TALK(${appname}.${evt.name})|mP| ${it.displayName} | (3) cT=null | cS=null | Sending playTrackAndRestore() | CVol=${currentVolume} | SVol=${desiredVolume}")
 							if (desiredVolume > -1) { 
-								if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration)}
-								if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume)}
+								if (desiredVolume == currentVolume){it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay])}
+								if (!(desiredVolume == currentVolume)){it.playTrackAndRestore(state.sound.uri, state.sound.duration, desiredVolume, [delay: myDelay])}
 								spoke = true
 							} else { 
-								if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration) }
-								if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume) }
+								if (currentVolume >= minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, [delay: myDelay]) }
+								if (currentVolume < minimumVolume) { it.playTrackAndRestore(state.sound.uri, state.sound.duration, minimumVolume, [delay: myDelay]) }
 								spoke = true
 							} //if (desiredVolume)
 						} //currentStatus == null
@@ -2448,7 +2454,6 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 			} //state.ableToTalk
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	}// if (state.speechDeviceType=="capability.musicPlayer")
-
 	if ((state.speechDeviceType == "capability.speechSynthesis") && (!( phrase==null ) && !(phrase==""))){
 		//capability.speechSynthesis is in use
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
@@ -2483,13 +2488,13 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 	} //if (state.speechDeviceType == "capability.speechSynthesis")
 
 	if ((!(smartAppSpeechDevice) && !(spoke)) && (!(phrase == null) && !(phrase == ""))) {
-	//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
-	LOGTRACE("TALK(${appname}.${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
+		//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
+		LOGTRACE("TALK(${appname}.${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
 	} else {
     	if ((smartAppSpeechDevice && !spoke) && (!(phrase == null) && !(phrase == ""))){
 			LOGTRACE("TALK(${appname}.${evt.name}) |sA| Sent to another smartApp.")
-        }
-     }
+       	}
+   	}
 }//Talk()
 
 def timeAllowed(devicetype,index){
@@ -3203,11 +3208,34 @@ private def myRunIn(delay_s, func) {
     }
 }
 
-def TalkQueue(phrase, customSpeechDevice, evt){
+def TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
     //IN DEVELOPMENT
     // Already talking or just recently (within x seconds) started talking
     // Queue up current request(s), give time for current action to complete, then speak and flush queue
-    LOGDEBUG("TALKQUEUE()")
+    def threshold = 0
+    def minDelay = 6 //Minimum seconds between talking
+    if (!(state?.sound?.duration == null)) { 
+    	threshold = state.sound.duration.toInteger() //Use the last musicPlayer sound duration from the last Talk call as the minimum delay
+    }
+    def durationFromLastTalkReq = 9999
+    //if (!(state.lastTalkTime == null)) { durationFromLastTalk = ((now() - state?.lastTalkTime)/1000).intValue() }
+    if (!(state.lastTalkRequest == null)) { durationFromLastTalkReq = ((now() - state?.lastTalkRequest)/1000).intValue() }
+    state.lastTalkRequest = now()
+    def tooSoon = (durationFromLastTalkReq < threshold)
+    def neededDelay = (((threshold - durationFromLastTalkReq) * 1000) + 1000)
+    LOGDEBUG ("TALKQUEUE(Threshold=${threshold},DurationFromLastTalkReq=${durationFromLastTalkReq},lastTalkReq=${state.lastTalkRequest},lastTalkTime=${state.lastTalkTime}, TooSoon=${tooSoon}, Calc=${neededDelay}")
+    if (tooSoon) {
+    	if (neededDelay < 0) { 
+        	neededDelay = 0 
+        } else {
+    		if (neededDelay < (minDelay * 1000)) { neededDelay = (minDelay * 1000) }
+        }
+    	LOGDEBUG("TALKQUEUE()-Spoke too recently; delaying ${(neededDelay / 1000)} seconds.")
+        return neededDelay
+    } else {
+    	LOGDEBUG("TALKQUEUE()-OK to speak; (${(durationFromLastTalkReq)})")
+    	return 0
+    }
 }
 
 def getWeather(mode, zipCode) {
@@ -3433,5 +3461,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P-2.0.a7"
+    state.appversion = "P2.0.a8"
 }
