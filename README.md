@@ -73,6 +73,7 @@ Voice phrases support the following variables (to be filled in at runtime)
 * **%lastmode%** = Last home mode; home, away, etc...
 * **%mode%** = Current home mode; home, away, etc...
 * **%time%** = Current time; HH:mm am/pm
+* **%mp3(url)** = Play hosted mp3 file from url (http://..../.../file.mp3); **No other phrase/tokens may be used!**
 * **%weathercurrent%** = Current weather (from Weather Underground; based on SmartThings Hub Zipcode)
 * **%weathertoday%** = Today's weather forecast (from Weather Underground; based on SmartThings Hub Zipcode)
 * **%weathertonight%** = Tonight's weather forecast (from Weather Underground; based on SmartThings Hub Zipcode)
