@@ -545,6 +545,7 @@ def initialize() {
     LOGTRACE("Initialized (Parent Version: ${parent?.state?.appversion}; Child Version: ${state.appversion})")
     sendNotificationEvent("${app.label.replace(" ","").toUpperCase()}: Settings activated")
     state.lastMode = location.mode
+    parent.setLastMode(location.mode)
 //End initialize()
 }
 def updated() {
@@ -1248,6 +1249,7 @@ def processModeChangeEvent(index, evt){
     if (!(timeAllowed("mode",index))) {
         LOGDEBUG("Remain silent in current time period")
         state.lastMode = location.mode
+        parent.setLastMode(location.mode)
         return
     }
 	if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
@@ -1287,6 +1289,7 @@ def processModeChangeEvent(index, evt){
         }
     }
     state.lastMode = location.mode
+    parent.setLastMode(location.mode)
 }
 //END MODE CHANGE
 
@@ -1634,5 +1637,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.a7"
+    state.appversion = "C2.0.a8"
 }
