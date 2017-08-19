@@ -2126,7 +2126,7 @@ def addPersonalityToPhrase(phrase, evt){
     //SWITCHES BEGIN
     if (evt.value == "on") {
     	if (phrase.contains("light")){
-        	options = 8
+        	options = 12
   			response[1] = "{POST}please don't forget to turn the light off"
            	response[2] = "{POST}night vision goggles would do the same but I guess they are more expensive."
             response[3] = "{POST}Thanks Thomas Edison!"
@@ -2134,18 +2134,23 @@ def addPersonalityToPhrase(phrase, evt){
             response[5] = "{POST}Where are my sunglasses."
             response[6] = "{POST}there goes the electricity bill!"
             response[7] = "{POST}the same old thing everyday."
-            response[8] = "{PRE}Oh, Hi"
+            response[8] = "{POST}It is about time it was awfully dark!"
+            response[9] = "{POST}Glad you are here, I was lonely"
+            response[10] = "{POST}It it time for us to play?"
+            response[11] = "{PRE}Oh, Hi"
+            response[12] = "{PRE}Oh, Hi there"
         } else {
         	//Something turned on, but it wasn't a light
-        	options = 3
+        	options = 4
             response[1] = "{POST}there goes the electricity bill!"
             response[2] = "{POST}the same old thing everyday."
             response[3] = "{PRE}Oh, Hi"
+            response[4] = "{PRE}Oh, Hi there"
         }
     }
     if (evt.value == "off") {
     	if (phrase.contains("light")){
-        	options = 8
+        	options = 12
            	response[1] = "{POST}It's about time!"
             response[2] = "{POST}time to save some money!"
             response[3] = "{POST}wow, it's dark"
@@ -2153,19 +2158,24 @@ def addPersonalityToPhrase(phrase, evt){
             response[5] = "{POST}I'll still be here, in the dark."
             response[6] = "{POST}Hey! You know I am afraid of the dark."
             response[7] = "{POST}Please don't leave me alone in the dark."
-            response[8] = "{PRE}Oh, Hi"
+            response[8] = "{POST}Good thing you turned that off it was hurting my eyes!"
+            response[8] = "{POST}You really like saving money!"
+            response[10] = "{POST}Is it time to go to sleep?"
+            response[11] = "{PRE}Oh, Hi"
+            response[12] = "{PRE}Oh, Hi there"
         } else {
         	//Something turned off, but it wasn't a light
-        	options = 4
+        	options = 5
         	response[1] = "{POST}It's about time!"
             response[2] = "{POST}time to save some money!"
             response[3] = "{POST}going green are we?"
             response[4] = "{PRE}Oh, Hi"
+            response[5] = "{PRE}Oh, Hi there"
         }
     }
     //SWITCHES END
     def UseGenericRandom = 0
-    myRandom = Math.abs(new Random().nextInt() % 10) + 1
+    myRandom = (new Random().nextInt(10))
     if (myRandom == 1 || myRandom == 4 || myRandom == 7) {
     	//GENERIC RESPONSES BEGIN
     	genericoptions = 4
@@ -2174,7 +2184,7 @@ def addPersonalityToPhrase(phrase, evt){
         genericresponse[3] = "{PRE}All I know is"
         genericresponse[4] = "{POST}that is all I know."
     	//GENERIC RESPONSES END
-    	myRandom = Math.abs(new Random().nextInt() % genericoptions) + 1
+    	myRandom = (new Random().nextInt(genericoptions))
         LOGDEBUG("genericoptions=${genericoptions};myRandom=${myRandom};phrase=${genericresponse[myRandom]}")
     	if (genericresponse[myRandom].contains("{PRE}")) {
     		genericresponse[myRandom] = genericresponse[myRandom].replace("{PRE}", "")
@@ -2187,7 +2197,7 @@ def addPersonalityToPhrase(phrase, evt){
         return phrase
     }
     if (options == 0) { return phrase }
-    myRandom = Math.abs(new Random().nextInt() % options) + 1
+    myRandom = (new Random().nextInt(options))
     LOGDEBUG("options=${options};myRandom=${myRandom};phrase=${response[myRandom]}")
     if (response[myRandom].contains("{PRE}")) {
     	response[myRandom] = response[myRandom].replace("{PRE}", "")
@@ -3214,8 +3224,12 @@ def TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, 
     // Queue up current request(s), give time for current action to complete, then speak and flush queue
     def threshold = 0
     def minDelay = 6 //Minimum seconds between talking
-    if (!(state?.sound?.duration == null)) { 
-    	threshold = state.sound.duration.toInteger() //Use the last musicPlayer sound duration from the last Talk call as the minimum delay
+    try {
+    	if (!(state?.sound?.duration == null)) { 
+    		threshold = state.sound.duration.toInteger() //Use the last musicPlayer sound duration from the last Talk call as the minimum delay
+    	}
+    } catch (exception) {
+    	threshold = 10
     }
     def durationFromLastTalkReq = 9999
     //if (!(state.lastTalkTime == null)) { durationFromLastTalk = ((now() - state?.lastTalkTime)/1000).intValue() }
@@ -3432,6 +3446,10 @@ def getDesiredVolume(invol) {
     return finalVolume
 }
 
+def setLastMode(mode){
+	state.lastMode = mode
+}
+
 def LOGDEBUG(txt){
 	def msgfrom = "[PARENT] "
 	if (txt?.contains("[CHILD:")) { msgfrom = "" }
@@ -3461,5 +3479,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P2.0.a8"
+    state.appversion = "P2.0.a9"
 }
