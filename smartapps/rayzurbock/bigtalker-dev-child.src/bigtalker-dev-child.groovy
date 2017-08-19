@@ -523,6 +523,8 @@ def pageHelpPhraseTokens(){
            AvailTokens += "%mode% = Current hub mode; home, away, etc\n\n"
            AvailTokens += "%time% = Current hub time; HH:mm am/pm\n\n"
            AvailTokens += "%shmstatus% = SmartHome Monitor Status (Disarmed, Armed Home, Armed Away)\n\n"
+           AvailTokens += "%mp3(url)% = Play hosted MP3 file; URL should be http://www.domain.com/path/file.mp3 \n"
+           AvailTokens += "No other tokens or phrases can be used with %mp3(url)%\n\n"
            AvailTokens += "%weathercurrent% = Current weather based on hub location\n\n"
            AvailTokens += "%weathercurrent(00000)% = Current weather* based on custom zipcode (replace 00000)\n\n"
            AvailTokens += "%weathertoday% = Today's weather forecast* based on hub location\n\n"
@@ -1637,5 +1639,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.a8"
+    state.appversion = "C2.0.b1"
 }
