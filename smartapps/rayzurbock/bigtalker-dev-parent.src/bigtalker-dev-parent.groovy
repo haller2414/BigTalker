@@ -1848,6 +1848,8 @@ def pageHelpPhraseTokens(){
            AvailTokens += "%mode% = Current hub mode; home, away, etc\n\n"
            AvailTokens += "%time% = Current hub time; HH:mm am/pm\n\n"
            AvailTokens += "%shmstatus% = SmartHome Monitor Status (Disarmed, Armed Home, Armed Away)\n\n"
+           AvailTokens += "%mp3(url)% = Play hosted MP3 file; URL should be http://www.domain.com/path/file.mp3 \n"
+           AvailTokens += "No other tokens or phrases can be used with %mp3(url)%\n\n"
            AvailTokens += "%weathercurrent% = Current weather based on hub location\n\n"
            AvailTokens += "%weathercurrent(00000)% = Current weather* based on custom zipcode (replace 00000)\n\n"
            AvailTokens += "%weathertoday% = Today's weather forecast* based on hub location\n\n"
@@ -1993,6 +1995,20 @@ def initialize() {
 
 def processPhraseVariables(appname, phrase, evt){
     def zipCode = location.zipCode
+    def mp3Url = ""
+    if (phrase.toLowerCase().contains("%mp3(")) { 
+    	if (phrase.toLowerCase().contains(".mp3)%")) {
+            def phraseMP3Start = (phrase.toLowerCase().indexOf("%mp3(") + 5)
+            def phraseMP3End = (phrase.toLowerCase().indexOf(".mp3)%"))
+            mp3Url = phrase.substring(phraseMP3Start, phraseMP3End)
+            LOGDEBUG("MP3 URL: ${mp3Url}")
+            phrase = phrase.replace("%mp3(","")
+            phrase = phrase.replace(".mp3)%", ".mp3")
+        } else {
+            phrase = "Invalid MP3 URL found in M P 3 token"
+        }
+        return phrase
+    }
     if (phrase.toLowerCase().contains(" percent ")) { phrase = phrase.replace(" percent ","%") }
     if (phrase.toLowerCase().contains("%groupname%")) {
     	phrase = phrase.toLowerCase().replace('%groupname%', appname)
@@ -2238,12 +2254,13 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
     }
 	def currentSpeechDevices = []
    	def smartAppSpeechDevice = false
+    def playAudioFile = false
    	def spoke = false
     LOGDEBUG ("TALK(myDelay=${myDelay})")
    	if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
    	if (!(phrase == null) && !(phrase == "")) {
 		phrase = processPhraseVariables(appname, phrase, evt)
-	    if (personality) { phrase = addPersonalityToPhrase(phrase, evt) }
+	    if (personality && !(phrase.toLowerCase().contains(".mp3"))) { phrase = addPersonalityToPhrase(phrase, evt) }
 	}
 	if (phrase == null || phrase == "") {
    		LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
@@ -2256,22 +2273,31 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 		if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null)) {
 			LOGTRACE("TALK(${appname}.${evt.name})|mP@|${volume} >> ${phrase}")
             if (resume) { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is desired") } else { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is not desired") }
-			try {
-				state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
-				state.ableToTalk = true
-			} catch(e) {
-				LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? ${e}")
-				//Try Again
-				try {
-					LOGTRACE("TALK(${appname}.${evt.name})|mP| Trying textToSpeech function again...")
+			if (!(phrase.toLowerCase().contains(".mp3"))){
+            	try {
+					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
+					state.ableToTalk = true
+				} catch(e) {
+					LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? ${e}")
+					//Try Again
+					try {
+						LOGTRACE("TALK(${appname}.${evt.name})|mP| Trying textToSpeech function again...")
 					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase)
 					state.ableToTalk = true
-				} catch(ex) {
-					LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? I tried textToSpeech() twice, SmartThings wouldn't convert/process.  I give up, Sorry..")
-					sendNotificationEvent("ST Platform issue? textToSpeech() failed.")
-					sendNotification("BigTalker couldn't announce: ${phrase}")
-				} //try again before final error(ableToTalk)
-			} //try (ableToTalk)
+					} catch(ex) {
+						LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? I tried textToSpeech() twice, SmartThings wouldn't convert/process.  I give up, Sorry..")
+						sendNotificationEvent("ST Platform issue? textToSpeech() failed.")
+						sendNotification("BigTalker couldn't announce: ${phrase}")
+					} //try again before final error(ableToTalk)
+				} //try (ableToTalk)
+            } else {
+            	LOGTRACE("TALK(${appname}.${evt.name})|mP| MP3=${phrase}")
+            	def sound = [uri:phrase, duration:10]
+                state.sound = sound
+                playAudioFile = true
+                state.ableToTalk = true
+                LOGTRACE("Sound=${state.sound}")
+            }
    	        if ((state?.allowScheduledPoll == true || state?.allowScheduledPoll == null) && (resume)) {
 				unschedule("poll")
 				LOGDEBUG("TALK(${appname}.${evt.name})|mP| Delaying polling for 120 seconds")
@@ -2497,7 +2523,7 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
 		} //if (!(settings.speechDeviceDefault == null) || !(customSpeechDevice == null))
 	} //if (state.speechDeviceType == "capability.speechSynthesis")
 
-	if ((!(smartAppSpeechDevice) && !(spoke)) && (!(phrase == null) && !(phrase == ""))) {
+	if ((!(smartAppSpeechDevice) && !(spoke)) && (!(phrase == null) && !(phrase == "")) && !(playAudioFile)) {
 		//No musicPlayer, speechSynthesis, or smartAppSpeechDevices selected. No route to export speech!
 		LOGTRACE("TALK(${appname}.${evt.name}) |ERROR| No selected speech device or smartAppSpeechDevice token in phrase. ${phrase}")
 	} else {
@@ -3479,5 +3505,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P2.0.a9"
+    state.appversion = "P2.0.b1"
 }
