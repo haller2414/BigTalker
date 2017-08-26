@@ -105,22 +105,36 @@ def pageConfigMotion(){
         section(){
             def defaultSpeechActive1 = ""
             def defaultSpeechInactive1 = ""
+            if (state?.motionTestActive1 == null) { state.motionTestActive1 = false }
+            if (state?.motionTestInactive1 == null) { state.motionTestInactive1 = false }
             if (!motionDeviceGroup1) {
                 defaultSpeechActive1 = "%devicename% is now %devicechange%"
                 defaultSpeechInactive1 = "%devicename% is now %devicechange%"
             }
             input name: "motionDeviceGroup1", type: "capability.motionSensor", title: "Motion Sensor(s)", required: false, multiple: true
-            input name: "motionTalkActive1", type: "text", title: "Say this on motion active:", required: false, defaultValue: defaultSpeechActive1
-            input name: "motionTalkInactive1", type: "text", title: "Say this on motion inactive:", required: false, defaultValue: defaultSpeechInactive1
-            input name: "motionPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
-            input name: "motionSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "motionTalkActive1", type: "text", title: "Say this on motion active:", required: false, defaultValue: defaultSpeechActive1, submitOnChange: true
+            input name: "motionTestActive1", type: "bool", title: "Toggle to test motion active phrase", required: false, defaultValue: false, submitOnChange: true
+            input name: "motionTalkInactive1", type: "text", title: "Say this on motion inactive:", required: false, defaultValue: defaultSpeechInactive1, submitOnChange: true
+            input name: "motionTestInactive1", type: "bool", title: "Toggle to test motion inactive phrase", required: false, defaultValue: false, submitOnChange: true
+            input name: "motionPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"], submitOnChange: true
+            input name: "motionSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false, submitOnChange: true
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
-            	input name: "motionVolume1", type: "number", title: "Set volume to (overrides default):", required: false
-            	input name: "motionResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+            	input name: "motionVolume1", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
+            	input name: "motionResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true, submitOnChange: true
             }
             input name: "motionModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "motionEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.motionStartTime1 == null))
+            if (!(settings.motionTestActive1 == state?.motionTestActive1)) {
+            	def testevent = [displayName: 'BigTalker Motion', name: 'MotionTest', value: 'Active']
+            	parent.Talk("Motion Test", settings.motionTalkActive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
+                state.motionTestActive1 = settings.motionTestActive1
+            }
+            if (!(settings.motionTestInactive1 == state?.motionTestInactive1)) {
+            	def testevent = [displayName: 'BigTalker Motion', name: 'MotionTest', value: 'Inactive']
+            	parent.Talk("Motion Test", settings.motionTalkInactive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
+                state.motionTestInactive1 = settings.motionTestInactive1
+            }
         }
         section("Help"){
             href "pageHelpPhraseTokens", title:"Phrase Tokens", description:"Tap for a list of phrase tokens"
@@ -134,22 +148,36 @@ def pageConfigSwitch(){
         section(){
             def defaultSpeechOn1 = ""
             def defaultSpeechOff1 = ""
+            if (state?.switchTestOn1 == null) { state.switchTestOn1 = false }
+            if (state?.switchTestOff1 == null) { state.switchTestOff1 = false }
             if (!switchDeviceGroup1) {
                 defaultSpeechOn1 = "%devicename% is now %devicechange%"
                 defaultSpeechOff1 = "%devicename% is now %devicechange%"
             }
             input name: "switchDeviceGroup1", type: "capability.switch", title: "Switch(es)", required: false, multiple: true
-            input name: "switchTalkOn1", type: "text", title: "Say this when switch is turned ON:", required: false, defaultValue: defaultSpeechOn1
-            input name: "switchTalkOff1", type: "text", title: "Say this when switch is turned OFF:", required: false, defaultValue: defaultSpeechOff1
-            input name: "switchPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"]
-            input name: "switchSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false
+            input name: "switchTalkOn1", type: "text", title: "Say this when switch is turned ON:", required: false, defaultValue: defaultSpeechOn1, submitOnChange: true
+            input name: "switchTestOn1", type: "bool", title: "Toggle to test switch ON phrase", required: false, defaultValue: false, submitOnChange: true
+            input name: "switchTalkOff1", type: "text", title: "Say this when switch is turned OFF:", required: false, defaultValue: defaultSpeechOff1, submitOnChange: true
+            input name: "switchTestOff1", type: "bool", title: "Toggle to test switch OFF phrase", required: false, defaultValue: false, submitOnChange: true
+            input name: "switchPersonality1", type: "enum", title: "Allow Personality (overrides default)?:", required: false, options: ["Yes", "No"], submitOnChange: true
+            input name: "switchSpeechDevice1", type: parent?.state?.speechDeviceType, title: "Talk with these text-to-speech devices (overrides default)", multiple: true, required: false, submitOnChange: true
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
-            	input name: "switchVolume1", type: "number", title: "Set volume to (overrides default):", required: false
-            	input name: "switchResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+            	input name: "switchVolume1", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
+            	input name: "switchResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true, submitOnChange: true
             }
             input name: "switchModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "switchEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.switchStartTime1 == null))
+            if (!(settings.switchTestOn1 == state?.switchTestOn1)) {
+            	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchTest', value: 'On']
+            	parent.Talk("Switch Test", settings.switchTalkOn1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
+                state.switchTestOn1 = settings.switchTestOn1
+            }
+            if (!(settings.switchTestOff1 == state?.switchTestOff1)) {
+            	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchTest', value: 'Off']
+            	parent.Talk("Switch Test", settings.switchTalkOff1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
+                state.switchTestOff1 = settings.switchTestOff1
+            }
         }
         section("Help"){
             href "pageHelpPhraseTokens", title:"Phrase Tokens", description:"Tap for a list of phrase tokens"
@@ -1639,5 +1667,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.b1"
+    state.appversion = "C2.0.b2"
 }
