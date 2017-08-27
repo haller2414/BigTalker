@@ -2004,8 +2004,11 @@ def processPhraseVariables(appname, phrase, evt){
             LOGDEBUG("MP3 URL: ${mp3Url}")
             phrase = phrase.replace("%mp3(","")
             phrase = phrase.replace(".mp3)%", ".mp3")
+            phrase = phrase.replace (" ", "%20")
+            phrase = phrase.replace ("+", "%2B")
+            phrase = phrase.replace ("-", "%2D")
         } else {
-            phrase = "Invalid MP3 URL found in M P 3 token"
+            phrase = "Invalid M P 3 URL found in M P 3 token"
         }
         return phrase
     }
@@ -3505,5 +3508,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P2.0.b1"
+    state.appversion = "P2.0.b2"
 }
