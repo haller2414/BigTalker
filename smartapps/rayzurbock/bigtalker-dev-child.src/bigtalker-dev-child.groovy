@@ -125,12 +125,12 @@ def pageConfigMotion(){
             input name: "motionModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "motionEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.motionStartTime1 == null))
-            if (!(settings.motionTestActive1 == state?.motionTestActive1)) {
+            if (!(settings.motionTestActive1 == null) && !(settings.motionTestActive1 == state?.motionTestActive1)) {
             	def testevent = [displayName: 'BigTalker Motion', name: 'MotionActiveTest', value: 'Active']
             	parent.Talk(app.label, settings.motionTalkActive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
                 state.motionTestActive1 = settings.motionTestActive1
             }
-            if (!(settings.motionTestInactive1 == state?.motionTestInactive1)) {
+            if (!(settings.motionTestInactive1 == null) && !(settings.motionTestInactive1 == state?.motionTestInactive1)) {
             	def testevent = [displayName: 'BigTalker Motion', name: 'MotionInactiveTest', value: 'Inactive']
             	parent.Talk(app.label, settings.motionTalkInactive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
                 state.motionTestInactive1 = settings.motionTestInactive1
@@ -168,12 +168,12 @@ def pageConfigSwitch(){
             input name: "switchModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "switchEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.switchStartTime1 == null))
-            if (!(settings.switchTestOn1 == state?.switchTestOn1)) {
+            if (!(settings.switchTestOn1 == null) && !(settings.switchTestOn1 == state?.switchTestOn1)) {
             	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchOnTest', value: 'On']
             	parent.Talk(app.label, settings.switchTalkOn1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
                 state.switchTestOn1 = settings.switchTestOn1
             }
-            if (!(settings.switchTestOff1 == state?.switchTestOff1)) {
+            if (!(settings.switchTestOff1 == null) && !(settings.switchTestOff1 == state?.switchTestOff1)) {
             	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchOffTest', value: 'Off']
             	parent.Talk(app.label, settings.switchTalkOff1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
                 state.switchTestOff1 = settings.switchTestOff1
@@ -1667,5 +1667,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.b3"
+    state.appversion = "C2.0.b4"
 }
