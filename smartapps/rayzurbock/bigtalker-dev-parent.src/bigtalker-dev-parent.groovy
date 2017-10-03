@@ -24,6 +24,7 @@ def pageStart(){
     state.parentAppName = "BigTalker-DEV-Parent"
     state.namespace = "rayzurbock"
 	setAppVersion()
+    state.supportedVoices = ["Ivy(en-us)","Joanna(en-us)","Joey(en-us)","Justin(en-us)","Kendra(en-us)","Kimberly(en-us)","Salli(en-us)","Amy(en-gb)","Brian(en-gb)","Emma(en-gb)","Miguel(es-us)","Penelope(es-us)"]
     if (checkConfig()) { 
         // Do nothing here, but run checkConfig() 
     } 
@@ -1808,6 +1809,7 @@ def pageTalkNow(){
             if (state.speechDeviceType == "capability.musicPlayer") {
             	input name: "talkNowVolume", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
             	input name: "talkNowResume", type: "bool", title: "Enable audio resume", multiple: true, required: false, submitOnChange: true, defaultValue: (settings?.resumePlay == false) ? false : true
+                input name: "talkNowVoice", type: "enum", title: "Select custom voice:", options: state.supportedVoices, required: false, submitOnChange: true
                 myTalkNowResume = settings.talkNowResume
             }
             input name: "speechTalkNow", type: text, title: "Speak phrase", required: false, submitOnChange: true
@@ -1821,8 +1823,11 @@ def pageTalkNow(){
                 }
                 def customevent = [displayName: 'BigTalker:TalkNow', name: 'TalkNow', value: 'TalkNow']
                 def myVolume = getDesiredVolume(settings?.talkNowVolume)
+                def myVoice = getMyVoice(settings.talkNowVoice)
+                //def myVoice = (!(talkNowVoice == null || talkNowVoice == "")) ? talkNowVoice : (settings?.speechVoice ? settings.speechVoice : "Sallie(en-us)")
                 def personality = false
-                Talk("Talk Now", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, personality, customevent)
+                LOGDEBUG ("TalkNow Voice=${myVoice}")
+                Talk("Talk Now", settings.speechTalkNow, settings.talkNowSpeechDevice, myVolume, myTalkNowResume, personality, myVoice, customevent)
                 state.lastTalkNow = settings.speechTalkNow
             }
         }
@@ -1830,6 +1835,16 @@ def pageTalkNow(){
             href "pageHelpPhraseTokens", title:"Phrase Tokens", description:"Tap for a list of phrase tokens"
         }
     }
+}
+
+def getMyVoice(deviceVoice){
+    def myVoice = "Not Used"
+    if (state?.speechDeviceType == "capability.musicPlayer") {
+    	log.debug "getMyVoice[parent]: deviceVoice=${deviceVoice ? deviceVoice : "Not selected"}"
+        log.debug "getMyVoice[parent]: settings.speechVoice=${settings?.speechVoice}"
+		myVoice = (!(deviceVoice == null || deviceVoice == "")) ? deviceVoice : (settings?.speechVoice ? settings?.speechVoice : "Salli(en-us)")
+    }
+    return myVoice
 }
 
 def pageHelpPhraseTokens(){
@@ -1907,6 +1922,7 @@ def pageConfigureDefaults(){
             section ("Adjust volume during announcement (optional; Supports: Sonos, VLC-Thing):"){
             	input "speechMinimumVolume", "number", title: "Minimum volume for announcement (0-100%, Default: 50%):", required: false
                 input "speechVolume", "number", title: "Set volume during announcement (0-100%):", required: false
+                input "speechVoice", "enum", title: "Select voice:", options: state.supportedVoices, required: true, defaultValue: "Salli(en-us)"
             }
             section ("Attempt to resume playing audio (optional; Supports: Sonos, VLC-Thing):"){
             	input "resumePlay", "bool", title: "Resume Play:", required: true, defaultValue: true
@@ -2249,17 +2265,24 @@ def adjustWeatherPhrase(phraseIn){
     return phraseOut
 }
 
-def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
+def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, voice, evt){
 	def myDelay = 100
+    def myVoice = "Salli"
+    if (!(voice == "" || voice == null)) { 
+        myVoice = voice
+    	myVoice = myVoice.replace("(en-us)","")
+    	myVoice = myVoice.replace("(en-gb)","")
+    	myVoice = myVoice.replace("(es-us)","")
+    }
     if (state.speechDeviceType == "capability.musicPlayer") { 
-    	myDelay = TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, evt) 
+    	myDelay = TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, voice, evt) 
         state.lastTalkTime = now()
     }
 	def currentSpeechDevices = []
    	def smartAppSpeechDevice = false
     def playAudioFile = false
    	def spoke = false
-    LOGDEBUG ("TALK(myDelay=${myDelay})")
+    LOGDEBUG ("TALK(myDelay=${myDelay}, voice=${myVoice})")
    	if ((phrase?.toLowerCase())?.contains("%askalexa%")) {smartAppSpeechDevice = true}
    	if (!(phrase == null) && !(phrase == "")) {
 		phrase = processPhraseVariables(appname, phrase, evt)
@@ -2278,14 +2301,14 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
             if (resume) { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is desired") } else { LOGTRACE("TALK(${appname}.${evt.name})|mP| Resume is not desired") }
 			if (!(phrase.toLowerCase().contains(".mp3"))){
             	try {
-					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase) 
+					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase, myVoice) 
 					state.ableToTalk = true
 				} catch(e) {
 					LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? ${e}")
 					//Try Again
 					try {
 						LOGTRACE("TALK(${appname}.${evt.name})|mP| Trying textToSpeech function again...")
-					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase)
+					state.sound = textToSpeech(phrase instanceof List ? phrase[0] : phrase, myVoice)
 					state.ableToTalk = true
 					} catch(ex) {
 						LOGERROR("TALK(${appname}.${evt.name})|mP| ST Platform issue (textToSpeech)? I tried textToSpeech() twice, SmartThings wouldn't convert/process.  I give up, Sorry..")
@@ -3247,7 +3270,7 @@ private def myRunIn(delay_s, func) {
     }
 }
 
-def TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, evt){
+def TalkQueue(appname, phrase, customSpeechDevice, volume, resume, personality, voice, evt){
     //IN DEVELOPMENT
     // Already talking or just recently (within x seconds) started talking
     // Queue up current request(s), give time for current action to complete, then speak and flush queue
@@ -3508,5 +3531,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P2.0.b2"
+    state.appversion = "P2.0.b3"
 }
