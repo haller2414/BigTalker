@@ -121,18 +121,23 @@ def pageConfigMotion(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "motionVolume1", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
             	input name: "motionResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true, submitOnChange: true
+                input name: "motionVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "motionModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "motionStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "motionEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.motionStartTime1 == null))
             if (!(settings.motionTestActive1 == null) && !(settings.motionTestActive1 == state?.motionTestActive1)) {
             	def testevent = [displayName: 'BigTalker Motion', name: 'MotionActiveTest', value: 'Active']
-            	parent.Talk(app.label, settings.motionTalkActive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
+                def myVoice = parent?.settings?.speechVoice
+                if (settings?.motionVoice1) { myVoice = motionVoice1 }
+            	parent.Talk(app.label, settings.motionTalkActive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, myVoice, testevent)
                 state.motionTestActive1 = settings.motionTestActive1
             }
             if (!(settings.motionTestInactive1 == null) && !(settings.motionTestInactive1 == state?.motionTestInactive1)) {
             	def testevent = [displayName: 'BigTalker Motion', name: 'MotionInactiveTest', value: 'Inactive']
-            	parent.Talk(app.label, settings.motionTalkInactive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, testevent)
+                def myVoice = parent?.settings?.speechVoice
+                if (settings?.motionVoice1) { myVoice = motionVoice1 }
+            	parent.Talk(app.label, settings.motionTalkInactive1, motionSpeechDevice1, motionVolume1, motionResumePlay1, motionPersonality1, myVoice, testevent)
                 state.motionTestInactive1 = settings.motionTestInactive1
             }
         }
@@ -164,18 +169,23 @@ def pageConfigSwitch(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "switchVolume1", type: "number", title: "Set volume to (overrides default):", required: false, submitOnChange: true
             	input name: "switchResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true, submitOnChange: true
+                input name: "switchVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "switchModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "switchStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "switchEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.switchStartTime1 == null))
             if (!(settings.switchTestOn1 == null) && !(settings.switchTestOn1 == state?.switchTestOn1)) {
             	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchOnTest', value: 'On']
-            	parent.Talk(app.label, settings.switchTalkOn1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
+                def myVoice = parent?.settings?.speechVoice
+                if (settings?.switchVoice1) { myVoice = switchVoice1 }
+            	parent.Talk(app.label, settings.switchTalkOn1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, myVoice, testevent)
                 state.switchTestOn1 = settings.switchTestOn1
             }
             if (!(settings.switchTestOff1 == null) && !(settings.switchTestOff1 == state?.switchTestOff1)) {
             	def testevent = [displayName: 'BigTalker Switch', name: 'SwitchOffTest', value: 'Off']
-            	parent.Talk(app.label, settings.switchTalkOff1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, testevent)
+                def myVoice = parent?.settings?.speechVoice
+                if (settings?.switchVoice1) { myVoice = switchVoice1 }
+            	parent.Talk(app.label, settings.switchTalkOff1, switchSpeechDevice1, switchVolume1, switchResumePlay1, switchPersonality1, myVoice, testevent)
                 state.switchTestOff1 = settings.switchTestOff1
             }
         }
@@ -203,6 +213,7 @@ def pageConfigPresence(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "presVolume1", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "presResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "presVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "presModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "presStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -232,6 +243,7 @@ def pageConfigLock(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "lockVolume1", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "lockResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "lockVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "lockModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "lockStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -261,6 +273,7 @@ def pageConfigContact(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "contactVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "contactResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "contactVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "contactModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "contactStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -293,6 +306,7 @@ def pageConfigMode(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "modePhraseVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "modePhraseResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "modePhraseVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "modeStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
             input name: "modeEndTime1", type: "time", title: "Don't talk after (overrides default)", required: (!(settings.modeStartTime1 == null))
@@ -327,6 +341,7 @@ def pageConfigThermostat(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "thermostatVolume1", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "thermostatResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "thermostatVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "thermostatModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "thermostatStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -356,6 +371,7 @@ def pageConfigAcceleration(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "accelerationVolume1", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "accelerationResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "accelerationVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "accelerationModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "accelerationStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -385,6 +401,7 @@ def pageConfigWater(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "waterVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "waterResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "waterVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "waterModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "waterStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -417,6 +434,7 @@ def pageConfigSmoke(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "smokeVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "smokeResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "smokeVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "smokeModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "smokeStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -446,6 +464,7 @@ def pageConfigButton(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "buttonVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "buttonResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "buttonVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "buttonModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "buttonStartTime1", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -473,6 +492,7 @@ def pageConfigSHM(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "SHMVolumeAway", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "SHMResumePlayAway", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "SHMResumeVoiceAway", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "SHMModesAway", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeAway", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -488,6 +508,7 @@ def pageConfigSHM(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "SHMVolumeHome", type: "number", title: "Set volume to (overrides default):", required: false
             	input name: "SHMResumePlayHome", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "SHMResumeVoiceHome", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "SHMModesHome", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeHome", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -503,6 +524,7 @@ def pageConfigSHM(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "SHMVolumeDisarm", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "SHMResumePlayDisarm", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "SHMResumeVoiceDisarm", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "SHMModesDisarm", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
             input name: "SHMStartTimeDisarm", type: "time", title: "Don't talk before (overrides default)", required: false, submitOnChange: true
@@ -526,6 +548,7 @@ def pageConfigTime(){
             if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
             	input name: "timeSlotVolume1", type: "number", title: "Set volume to (overrides default):", required: false
                 input name: "timeSlotResumePlay1", type: "bool", title: "Attempt to resume playing audio?", required: false, defaultValue: (parent?.settings?.resumePlay == false) ? false : true
+                input name: "timeSlotVoice1", type: "enum", title: "Voice (overrides default):", options: parent?.state?.supportedVoices, required: false, submitOnChange: true
             }
             input name: "timeSlotModes1", type: "mode", title: "Talk when in these mode(s) (overrides default)", multiple: true, required: false
         }
@@ -983,6 +1006,7 @@ def processScheduledEvent(index, eventtime, alloweddays){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
+    def myVoice = getMyVoice(settings?.timeSlotVoice1)
     def calendar = Calendar.getInstance()
 	calendar.setTimeZone(location.timeZone)
 	def today = calendar.get(Calendar.DAY_OF_WEEK)
@@ -999,7 +1023,7 @@ def processScheduledEvent(index, eventtime, alloweddays){
     }
     //LOGDEBUG("today=${today}, MON=${Calendar.MONDAY},TUE=${Calendar.TUESDAY},WED=${Calendar.WEDNESDAY},THUR=${Calendar.THURSDAY},FRI=${Calendar.FRIDAY},SAT=${Calendar.SATURDAY},SUN=${Calendar.SUNDAY}")
     def timeNow = getTimeFromDateString(eventtime, true)
-    LOGDEBUG("(onScheduledEvent): ${timeNow}, ${index}, ${todayStr.toUpperCase()}, ${alloweddays.each(){return it.toUpperCase()}}")
+    LOGDEBUG("(onScheduledEvent): ${timeNow}, ${index}, ${todayStr.toUpperCase()}, ${alloweddays.each(){return it.toUpperCase()}}, ${myVoice}")
     alloweddays.each(){
         if (todayStr.toUpperCase() == it.toUpperCase()) {
             LOGDEBUG("Time and day match schedule")
@@ -1022,7 +1046,7 @@ def processScheduledEvent(index, eventtime, alloweddays){
             }
             if (index == 1) { state.TalkPhrase = settings.timeSlotOnTime1; state.speechDevice = timeSlotSpeechDevice1; myVolume = getDesiredVolume(settings.timeSlotVolume1)}
             def customevent = [displayName: 'BigTalker:OnSchedule', name: 'OnSchedule', value: "${todayStr}@${timeNow}"]
-            parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, personality, customevent)
+            parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume,resume, personality, myVoice, customevent)
         }
     }
     if (!dayMatch) { 
@@ -1041,7 +1065,8 @@ def processMotionEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onMotionEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.switchMotion1)
+    LOGDEBUG("(onMotionEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("motion",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1068,11 +1093,11 @@ def processMotionEvent(index, evt){
     }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkActive1; state.speechDevice = motionSpeechDevice1; myVolume = getDesiredVolume(settings.motionVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "inactive") {
         if (index == 1) { state.TalkPhrase = settings.motionTalkInactive1; state.speechDevice = motionSpeechDevice1; myVolume = getDesiredVolume(settings.motionVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1087,7 +1112,8 @@ def processSwitchEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onSwitchEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.switchVoice1)
+    LOGDEBUG("(onSwitchEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("switch",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1114,11 +1140,11 @@ def processSwitchEvent(index, evt){
     }
     if (evt.value == "on") {
         if (index == 1) { state.TalkPhrase = settings.switchTalkOn1; state.speechDevice = switchSpeechDevice1; myVolume = getDesiredVolume(settings.switchVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "off") {
         if (index == 1) { state.TalkPhrase = settings.switchTalkOff1; state.speechDevice = switchSpeechDevice1; myVolume = getDesiredVolume(settings.switchVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1133,7 +1159,8 @@ def processPresenceEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onPresenceEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.presVoice1)
+    LOGDEBUG("(onPresenceEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("presence",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1160,11 +1187,11 @@ def processPresenceEvent(index, evt){
     }
     if (evt.value == "present") {
         if (index == 1) { state.TalkPhrase = settings.presTalkOnArrive1; state.speechDevice = presSpeechDevice1; myVolume = getDesiredVolume(settings.presVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "not present") {
         if (index == 1) { state.TalkPhrase = settings.presTalkOnLeave1; state.speechDevice = presSpeechDevice1; myVolume = getDesiredVolume(settings.presVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1181,7 +1208,8 @@ def processLockEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onLockEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.lockVoice1)
+    LOGDEBUG("(onLockEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("lock",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1208,11 +1236,11 @@ def processLockEvent(index, evt){
     }
     if (evt.value == "locked") {
         if (index == 1) { state.TalkPhrase = settings.lockTalkOnLock1; state.speechDevice = lockSpeechDevice1; myVolume = getDesiredVolume(settings.lockVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "unlocked") {
         if (index == 1) { state.TalkPhrase = settings.lockTalkOnUnlock1; state.speechDevice = lockSpeechDevice1; myVolume = getDesiredVolume(settings.lockVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1228,7 +1256,8 @@ def processContactEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onContactEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.contactVoice1)
+    LOGDEBUG("(onContactEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("contact",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1255,11 +1284,11 @@ def processContactEvent(index, evt){
     }
     if (evt.value == "open") {
         if (index == 1) { state.TalkPhrase = settings.contactTalkOnOpen1; state.speechDevice = contactSpeechDevice1; myVolume = getDesiredVolume(settings.contactVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "closed") {
         if (index == 1) { state.TalkPhrase = settings.contactTalkOnClose1; state.speechDevice = contactSpeechDevice1; myVolume = getDesiredVolume(settings.contactVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1274,7 +1303,8 @@ def processModeChangeEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onModeEvent): Last Mode: ${state.lastMode}, New Mode: ${location.mode}")
+    def myVoice = getMyVoice(settings?.modeVoice1)
+    LOGDEBUG("(onModeEvent): Last Mode: ${state.lastMode}, New Mode: ${location.mode}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("mode",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1302,7 +1332,7 @@ def processModeChangeEvent(index, evt){
                 state.TalkPhrase = null
                 state.speechDevice = null
                 state.TalkPhrase = settings.TalkOnModeChange1; state.speechDevice = modePhraseSpeechDevice1; myVolume = getDesiredVolume(settings.modePhraseVolume1)
-                if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+                if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
                 state.TalkPhrase = null
                 state.speechDevice = null
             } else {
@@ -1313,7 +1343,7 @@ def processModeChangeEvent(index, evt){
             state.TalkPhrase = null
             state.speechDevice = null
             state.TalkPhrase = settings.TalkOnModeChange1; state.speechDevice = modePhraseSpeechDevice1; myVolume = getDesiredVolume(settings.modePhraseVolume1)
-            if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+            if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
             state.TalkPhrase = null
             state.speechDevice = null
         }
@@ -1332,7 +1362,8 @@ def processThermostatEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onThermostatEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.thermostatVoice1)
+    LOGDEBUG("(onThermostatEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("thermostat",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1359,19 +1390,19 @@ def processThermostatEvent(index, evt){
     }
     if (evt.value == "idle") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnIdle1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "heating") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnHeating1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "cooling") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnCooling1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "fan only") {
         if (index == 1) { state.TalkPhrase = settings.thermostatTalkOnFan1; state.speechDevice = thermostatSpeechDevice1; myVolume = getDesiredVolume(settings.thermostatVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
 
     state.TalkPhrase = null
@@ -1388,7 +1419,8 @@ def processAccelerationEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onAccelerationEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.accelerationVoice1)
+    LOGDEBUG("(onAccelerationEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("acceleration",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1415,11 +1447,11 @@ def processAccelerationEvent(index, evt){
     }
     if (evt.value == "active") {
         if (index == 1) { state.TalkPhrase = settings.accelerationTalkOnActive1; state.speechDevice = accelerationSpeechDevice1; myVolume = getDesiredVolume(settings.accelerationVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "inactive") {
         if (index == 1) { state.TalkPhrase = settings.accelerationTalkOnInactive1; state.speechDevice = accelerationSpeechDevice1; myVolume = getDesiredVolume(settings.accelerationVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1435,7 +1467,8 @@ def processWaterEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onWaterEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.waterVoice1)
+    LOGDEBUG("(onWaterEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("water",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1462,11 +1495,11 @@ def processWaterEvent(index, evt){
     }
     if (evt.value == "wet") {
         if (index == 1) { state.TalkPhrase = settings.waterTalkOnWet1; state.speechDevice = waterSpeechDevice1; myVolume = getDesiredVolume(settings.waterVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "dry") {
         if (index == 1) { state.TalkPhrase = settings.waterTalkOnDry1; state.speechDevice = waterSpeechDevice1; myVolume = getDesiredVolume(settings.waterVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1482,7 +1515,8 @@ def processSmokeEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onSmokeEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.smokeVoice1)
+    LOGDEBUG("(onSmokeEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("smoke",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1509,15 +1543,15 @@ def processSmokeEvent(index, evt){
     }
     if (evt.value == "detected") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnDetect1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "clear") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnClear1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     if (evt.value == "tested") {
         if (index == 1) { state.TalkPhrase = settings.smokeTalkOnTest1; state.speechDevice = smokeSpeechDevice1; myVolume = getDesiredVolume(settings.smokeVolume1)}
-        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+        if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     }
     state.TalkPhrase = null
     state.speechDevice = null
@@ -1533,7 +1567,8 @@ def processButtonEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onButtonEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = getMyVoice(settings?.buttonVoice1)
+    LOGDEBUG("(onButtonEvent): ${evt.name}, ${index}, ${evt.value}, ${myVoice}")
     //Are we in an allowed time period?
     if (!(timeAllowed("button",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1560,7 +1595,7 @@ def processButtonEvent(index, evt){
     }
     if (index == 1 && evt.value == "pushed") { state.TalkPhrase = settings.buttonTalkOnPress1; state.speechDevice = buttonSpeechDevice1; myVolume = getDesiredVolume(settings.buttonVolume1)}
     if (index == 1 && evt.value == "held") { state.TalkPhrase = settings.buttonTalkOnHold1; state.speechDevice = buttonSpeechDevice1; myVolume = getDesiredVolume(settings.buttonVolume1)}
-    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     state.TalkPhrase = null
     state.speechDevice = null
 }
@@ -1577,7 +1612,8 @@ def processSHMEvent(index, evt){
 	def resume = ""; resume = parent?.settings?.resumePlay; if (resume == "") { resume = true }
     def personality = ""; personality = parent?.settings?.personalityMode; if (personality == "" || personality == null) { personality = false }
     def myVolume = -1
-    LOGDEBUG("(onSHMEvent): ${evt.name}, ${index}, ${evt.value}")
+    def myVoice = ""
+    LOGDEBUG("(onSHMEvent): ${evt.name}, ${index}, ${evt.value}, NotSetYet")
     //Are we in an allowed time period?
     if (!(timeAllowed("SHM",index))) {
         LOGDEBUG("Remain silent in current time period")
@@ -1593,12 +1629,15 @@ def processSHMEvent(index, evt){
 	if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
 		if (index == 1) {
 			if (!settings?.SHMResumePlayAway == null) { resume = settings.SHMResumePlayAway }
+            if (settings?.SHMVoiceAway) { myVoice = getMyVoice(settings?.SHMVoiceAway) }
 		}
 		if (index == 2) {
 			if (!settings?.SHMResumePlayHome == null) { resume = settings.SHMResumePlayHome }
+            if (settings?.SHMVoiceHome) { myVoice = getMyVoice(settings?.SHMVoiceHome) }
 		}
 		if (index == 3) {
 			if (!settings?.SHMResumePlayDisarm == null) { resume = settings.SHMResumePlayDisarm }
+            if (settings?.SHMVoiceDisarm) { myVoice = getMyVoice(settings?.SHMVoiceDisarm) }
 		}
         if (resume == null) { resume = true }
 	} else { resume = false }
@@ -1611,7 +1650,7 @@ def processSHMEvent(index, evt){
     if (index == 1) {state.TalkPhrase = settings.SHMTalkOnAway; state.speechDevice = SHMSpeechDeviceAway; myVolume = getDesiredVolume(settings.SHMVolumeAway)}
     if (index == 2) {state.TalkPhrase = settings.SHMTalkOnHome; state.speechDevice = SHMSpeechDeviceHome; myVolume = getDesiredVolume(settings.SHMVolumeHome)}
     if (index == 3) {state.TalkPhrase = settings.SHMTalkOnDisarm; state.speechDevice = SHMSpeechDeviceDisarm; myVolume = getDesiredVolume(settings.SHMVolumeDisarm)}
-    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, evt)} else {LOGDEBUG("Not configured to speak for this event")}
+    if (!(state?.TalkPhrase == null)) {parent.Talk(app.label,state.TalkPhrase, state.speechDevice, myVolume, resume, personality, myVoice, evt)} else {LOGDEBUG("Not configured to speak for this event")}
     state.TalkPhrase = null
     state.speechDevice = null
 }
@@ -1641,6 +1680,16 @@ def getDesiredVolume(invol) {
     return finalVolume
 }
 
+def getMyVoice(deviceVoice){
+    def myVoice = "Not Used"
+    if (parent?.state?.speechDeviceType == "capability.musicPlayer") {
+    	log.debug "getMyVoice: deviceVoice=${deviceVoice}"
+        log.debug "getMyVoice: settings.parent.speechVoice=${parent?.settings?.speechVoice}"
+		myVoice = (!(deviceVoice == null || deviceVoice == "")) ? deviceVoice : (parent?.settings?.speechVoice ? parent?.settings?.speechVoice : "Salli(en-us)")
+    }
+    return myVoice
+}
+
 def LOGDEBUG(txt){
 	if (parent?.settings?.debugmode) { parent.LOGDEBUG("[CHILD:${app.label}] ${txt}") }
     try {
@@ -1667,5 +1716,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "C2.0.b4"
+    state.appversion = "C2.0.b5"
 }
