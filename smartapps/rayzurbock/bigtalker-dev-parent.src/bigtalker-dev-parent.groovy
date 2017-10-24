@@ -2289,8 +2289,8 @@ def Talk(appname, phrase, customSpeechDevice, volume, resume, personality, voice
 	    if (personality && !(phrase.toLowerCase().contains(".mp3"))) { phrase = addPersonalityToPhrase(phrase, evt) }
 	}
 	if (phrase == null || phrase == "") {
-   		LOGERROR(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
-    	sendNotification(processPhraseVariables("BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
+   		LOGERROR(processPhraseVariables(appname, "BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
+    	sendNotification(processPhraseVariables(appname, "BigTalker - Check configuration. Phrase is empty for %devicename%", evt))
 	}
 	if (resume == null) { resume = true }
 	if ((state.speechDeviceType == "capability.musicPlayer") && (!( phrase==null ) && !(phrase==""))){
@@ -3531,5 +3531,5 @@ def LOGERROR(txt){
 }
 
 def setAppVersion(){
-    state.appversion = "P2.0.b3"
+    state.appversion = "P2.0.b4"
 }
